@@ -1,0 +1,4059 @@
+# design.kv
+
+#:kivy 2.1.0
+#:import NoTransition kivy.uix.screenmanager.NoTransition
+
+# Importujemy klasy ekranów, aby były dostępne w pliku .kv
+#:import MDTopAppBar kivymd.uix.toolbar.MDTopAppBar
+#:import MDIconButton kivymd.uix.button.MDIconButton
+#:import RootScreenManager app_screens.RootScreenManager
+#:import RejestracjaScreen app_screens.RejestracjaScreen
+#:import LogowanieScreen app_screens.LogowanieScreen
+#:import MenuGlowneScreen app_screens.MenuGlowneScreen
+#:import TreningScreen app_screens.TreningScreen
+#:import ProfileScreen app_screens.ProfileScreen
+#:import ActiveRoutineScreen app_screens.ActiveRoutineScreen
+#:import WorkoutSummaryScreen app_screens.WorkoutSummaryScreen
+#:import WorkoutHistoryScreen app_screens.WorkoutHistoryScreen
+#:import ExerciseLibraryScreen app_screens.ExerciseLibraryScreen
+#:import ExerciseDetailScreen app_screens.ExerciseDetailScreen
+#:import RoutineBuilderScreen app_screens.RoutineBuilderScreen
+#:import ExerciseAnalyticsScreen app_screens.ExerciseAnalyticsScreen
+#:import BodyMeasurementsScreen app_screens.BodyMeasurementsScreen
+#:import ProgressPhotosScreen app_screens.ProgressPhotosScreen
+#:import SettingsScreen app_screens.SettingsScreen
+#:import WorkoutTemplatesScreen app_screens.WorkoutTemplatesScreen
+#:import NavButton ui_widgets.NavButton
+#:import BottomNavBar ui_widgets.BottomNavBar
+#:import WorkoutCard ui_widgets.WorkoutCard
+#:import CompletedWorkoutCard ui_widgets.CompletedWorkoutCard
+#:import ExercisePreviewItem ui_widgets.ExercisePreviewItem
+#:import ActiveExerciseWidget ui_widgets.ActiveExerciseWidget
+#:import ExerciseSetWidget ui_widgets.ExerciseSetWidget
+#:import WorkoutTimerWidget ui_widgets.WorkoutTimerWidget
+#:import RPESelector ui_widgets.RPESelector
+#:import SetTypeSelector ui_widgets.SetTypeSelector
+#:import WorkoutStatsBar ui_widgets.WorkoutStatsBar
+#:import ExerciseImagePlaceholder ui_widgets.ExerciseImagePlaceholder
+#:import ExerciseLibraryCard ui_widgets.ExerciseLibraryCard
+#:import FilterChipWidget ui_widgets.FilterChipWidget
+#:import MuscleGroupBadge ui_widgets.MuscleGroupBadge
+#:import RoutineExerciseItem ui_widgets.RoutineExerciseItem
+#:import StatCard ui_widgets.StatCard
+#:import PersonalRecordCard ui_widgets.PersonalRecordCard
+#:import StreakWidget ui_widgets.StreakWidget
+#:import WeeklyActivityWidget ui_widgets.WeeklyActivityWidget
+#:import BodyMeasurementItem ui_widgets.BodyMeasurementItem
+
+<RootScreenManager>:
+    # Użyjemy NoTransition dla natychmiastowego przełączania.
+    transition: NoTransition()
+
+    # Definicja wszystkich ekranów w menedżerze
+    RejestracjaScreen:
+        name: 'rejestracja'
+    LogowanieScreen:
+        name: 'logowanie'
+    MenuGlowneScreen:
+        name: 'menu_glowne'
+    TreningScreen:
+        name: 'trening'
+    ProfileScreen:
+        name: 'profile'
+    ActiveRoutineScreen:
+        name: 'active_routine'
+    WorkoutSummaryScreen:
+        name: 'workout_summary'
+    WorkoutHistoryScreen:
+        name: 'workout_history'
+    ExerciseLibraryScreen:
+        name: 'exercise_library'
+    ExerciseDetailScreen:
+        name: 'exercise_detail'
+    RoutineBuilderScreen:
+        name: 'routine_builder'
+    ExerciseAnalyticsScreen:
+        name: 'exercise_analytics'
+    BodyMeasurementsScreen:
+        name: 'body_measurements'
+    ProgressPhotosScreen:
+        name: 'progress_photos'
+    SettingsScreen:
+        name: 'settings'
+    WorkoutTemplatesScreen:
+        name: 'workout_templates'
+
+<NavButton>:
+    orientation: 'vertical'
+    spacing: '5dp'
+    size_hint_y: None
+    height: '65dp'
+
+    Image:
+        source: root.icon_source
+        size_hint: None, None
+        size: '42dp', '42dp'
+        pos_hint: {'center_x': 0.5}
+
+    Label:
+        text: root.text
+        font_size: '12sp'
+        halign: 'center'
+
+<BottomNavBar>:
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: '70dp'
+    spacing: '8dp'
+    padding: '5dp'
+
+
+
+<WorkoutCard>:
+    style: "outlined"
+    line_color: "428C7F"
+    md_bg_color: "094036"
+    orientation: 'vertical'
+    size_hint_y: None
+    height: "140dp"
+    padding: "15dp"
+    radius: [15,]
+
+    # Nagłówek z tytułem i menu trzech kropek
+    MDBoxLayout:
+        size_hint_y: None
+        height: "40dp"
+        spacing: "10dp"
+
+        MDLabel:
+            text: root.title
+            font_style: 'H5'
+            halign: 'left'
+            valign: 'center'
+            size_hint_x: 0.9
+
+        MDIconButton:
+            icon: "dots-horizontal"
+            size_hint: None, None
+            size: "40dp", "40dp"
+            theme_text_color: "Custom"
+            text_color: "FFFFFF"
+
+    Widget:
+        size_hint_y: 1
+
+    # Przycisk START ROUTINE z fioletowym obrysem
+    MDRaisedButton:
+        text: "START ROUTINE"
+        size_hint_y: None
+        height: "45dp"
+        size_hint_x: 1
+        md_bg_color: 0, 0, 0, 0
+        line_color: "6B4FBB"
+        line_width: 2
+        theme_text_color: "Custom"
+        text_color: "FFFFFF"
+        on_release: app.root.current = 'active_routine'
+
+
+# Wskazówka: Warto użyć MDCard lub FloatLayout wewnątrz ekranu,
+# aby lepiej kontrolować układ, ale dla prostoty użyjemy MDBoxLayout
+# z orientacją pionową.
+
+# --- Ekran Rejestracji ---
+<RejestracjaScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        # 
+        padding: "30dp", "200dp", "30dp", "30dp" # Główne marginesy
+
+
+        #Tło
+        canvas.before:
+            # 1. Definicja koloru - musi być biały (1, 1, 1, 1),
+            #    jeśli chcemy widzieć kolory z obrazka (tekstury).
+            Color:
+                rgba: 1, 1, 1, 1
+
+            # 2. Rysowanie prostokąta, który pokryje całą powierzchnię Layotu.
+            Rectangle:
+                pos: self.pos    # Pozycja Layotu
+                size: self.size  # Rozmiar Layotu
+
+                # 3. KLUCZ: Użycie tekstury jako źródła
+                source: 'assets/Tło.png'
+
+
+        # Nagłówek i Logo
+        MDBoxLayout:
+            orientation: 'vertical'
+            spacing: "-50dp"  # Zmień z domyślnego na mniejszy, np. 5dp
+            padding: "1dp"
+
+            # Wskazówka: Zastąp MDLabel obrazem z katalogu assets/
+            # po dodaniu pliku graficznego.
+            Image:
+                source:'assets/Logo.png'
+                size_hint_x: 1 # Rozciągnij na całą szerokość
+                size_hint_y: None
+                height: "400dp"
+
+            MDLabel:
+                text: "Register your account"
+                halign: 'center'
+                font_style: 'H6'
+                height: self.texture_size[1]
+                #padding_y: "1dp"
+
+        Widget:
+            size_hint_x: 1 # Rozciągnij na całą szerokość
+            size_hint_y: None
+            height: "200dp"
+
+
+        # Formularz
+        MDBoxLayout:
+            orientation: 'vertical'
+            spacing: "20dp"
+            padding_y: "30dp"
+            size_hint_y: 1
+
+            MDTextField:
+                id: email_reg
+                hint_text: "Email..."
+                mode: "rectangle" # Styl pola
+                icon_right: "email-outline"
+                size_hint_y: None
+                height: "40dp"
+
+            MDTextField:
+                id: password_reg
+                hint_text: "Password..."
+                mode: "rectangle"
+                icon_right: "lock-outline"
+                password: True # Ukrywa tekst
+
+            MDTextField:
+                id: confirm_password_reg
+                hint_text: "Confirm Password..."
+                mode: "rectangle"
+                icon_right: "lock-check-outline"
+                password: True
+
+            MDRaisedButton:
+                text: "Sign Up"
+                size_hint_y: None
+                height: "40dp"
+                size_hint_x: 0.8
+                pos_hint: {'center_x': 0.5}
+
+                #on_release: app.root.current = 'logowanie' # Po wciśnięciu idź do logowania
+                on_release:
+                    root.do_register()
+
+            MDLabel:
+                id: register_status
+                text: ""
+                halign: "center"
+                theme_text_color: "Custom"
+                text_color: 1, 0.3, 0.3, 1
+                size_hint_y: None
+                height: "24dp"
+
+
+# --- Ekran Logowania ---
+<LogowanieScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        padding: "30dp", "100dp", "30dp", "30dp"
+
+         #Tło
+        canvas.before:
+            # 1. Definicja koloru - musi być biały (1, 1, 1, 1),
+            #    jeśli chcemy widzieć kolory z obrazka (tekstury).
+            Color:
+                rgba: 1, 1, 1, 1
+
+            # 2. Rysowanie prostokąta, który pokryje całą powierzchnię Layotu.
+            Rectangle:
+                pos: self.pos    # Pozycja Layotu
+                size: self.size  # Rozmiar Layotu
+
+                # 3. KLUCZ: Użycie tekstury jako źródła
+                source: 'assets/Tło.png'
+                # (Zmień ścieżkę na rzeczywistą, jeśli jest inna)
+
+        # Nagłówek i Logo
+        MDBoxLayout:
+            orientation: 'vertical'
+            spacing: "-50dp"  # Zmień z domyślnego na mniejszy, np. 5dp
+            padding: "1dp"
+
+            # Wskazówka: Zastąp MDLabel obrazem z katalogu assets/
+            # po dodaniu pliku graficznego.
+            Image:
+                source:'assets/Logo.png'
+                size_hint_x: 1 # Rozciągnij na całą szerokość
+                size_hint_y: None
+                height: "400dp"
+
+            MDLabel:
+                text: "Log in to your account"
+                halign: 'center'
+                font_style: 'H6'
+                size_hint_y: None
+                height: self.texture_size[1]
+                padding_y: "1dp"
+
+        Widget:
+            size_hint_x: None # Rozciągnij na całą szerokość
+            size_hint_y: None
+            height: "50dp"
+
+        MDBoxLayout:
+            orientation: 'vertical'
+            spacing: "20dp"
+            padding_y: "30dp"
+            size_hint_y: 1
+
+            MDTextField:
+                id: email_login
+                hint_text: "Email..."
+                mode: "rectangle"
+                icon_right: "email-outline"
+                size_hint_y: None
+                height: "40dp"
+
+            MDTextField:
+                id: password_login
+                hint_text: "Password..."
+                mode: "rectangle"
+                icon_right: "lock-outline"
+                password: True
+
+            MDRaisedButton:
+                text: "Log in"
+                size_hint_y: None
+                height: "40dp"
+                size_hint_x: 0.8
+                pos_hint: {'center_x': 0.5}
+                # Po zalogowaniu idź do menu głównego
+
+                #on_release: app.root.current = 'menu_glowne'
+                on_release: root.do_login()
+
+
+# --- Ekran Menu Głównego ---
+<MenuGlowneScreen>:
+    RelativeLayout:
+        #orientation: 'vertical'
+
+        # Background image (Tło.png)
+        Image:
+            source: 'assets/Tło.png'
+            allow_stretch: True
+            keep_ratio: False
+            pos: self.pos
+            size: self.size
+
+        # Logo image with transparency and positioning
+        Image:
+            source: 'assets/Logo.png'
+            opacity: 0.4
+            pos_hint: {'center_x': 0.5, 'top': 1.19} # Position at top, centered horizontally
+            size_hint: (1, 0.6) # Make it 80% width and 40% height of parent
+            allow_stretch: True
+            keep_ratio: True # Maintain aspect ratio
+
+        # === Top Bar z napisem "Home" ===
+        MDBoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: "56dp"
+            padding: "16dp", "8dp"
+            pos_hint: {"top": 1}
+
+            MDLabel:
+                text: "Home"
+                font_size: "26sp"
+                bold: True
+                theme_text_color: "Custom"
+                text_color: "FFFFFF"
+                valign: "middle"
+                size_hint_x: 0.3
+                size_hint_y: 0.3
+
+        ScrollView:
+            pos_hint: {"top": 0.75, "center_x": 0.5}
+            size_hint: 1, 0.64  # Wysokość: od 0.75 do ~0.11 (zostawia miejsce na BottomNavBar)
+
+            MDBoxLayout:
+                id: exercise_list
+                orientation: 'vertical'
+                padding: "15dp", "15dp", "15dp", "80dp"  # Dolny padding dla BottomNavBar
+                spacing: "15dp"
+                size_hint_y: None
+                height: self.minimum_height
+
+                # === Karta zakończonego treningu Pull A ===
+                CompletedWorkoutCard:
+                    workout_name: "Pull A"
+                    workout_time: "1h 40min"
+                    workout_volume: "8 738 kg"
+                    hidden_exercises_count: 3
+
+                # === Karta zakończonego treningu Push ===
+                CompletedWorkoutCard:
+                    workout_name: "Push"
+                    workout_time: "1h 15min"
+                    workout_volume: "7 245 kg"
+                    hidden_exercises_count: 2
+
+                # === Karta zakończonego treningu Legs ===
+                CompletedWorkoutCard:
+                    workout_name: "Legs"
+                    workout_time: "1h 50min"
+                    workout_volume: "12 340 kg"
+                    hidden_exercises_count: 4
+
+        BottomNavBar:
+            NavButton:
+                text: 'Home'
+                icon_source: 'assets/Home.png'
+                screen_name: 'menu_glowne'
+            NavButton:
+                text: 'Workout'
+                icon_source: 'assets/Workout.png'
+                screen_name: 'trening'
+            NavButton:
+                text: 'Profile'
+                icon_source: 'assets/image.png' # You need to create or find this icon
+                screen_name: 'profile'
+
+
+# ======================================================================
+# === PROFILE SCREEN - Rozbudowany profil użytkownika =================
+# ======================================================================
+# Wzorowany na makiecie PowerGym (ANDRZEJ + wykresy) i Hevy Profile
+# Pokazuje statystyki, PRs, streaks, wykresy postępów
+
+<ProfileScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        # === Background z logo (jak w makiecie) ===
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'assets/Tło.png'
+
+        RelativeLayout:
+            # Logo w tle (przeźroczyste)
+            Image:
+                source: 'assets/Logo.png'
+                opacity: 0.4
+                pos_hint: {'center_x': 0.5, 'top': 1.19} # Position at top, centered horizontally
+                size_hint: (1, 0.6) # Make it 80% width and 40% height of parent
+                allow_stretch: True
+                keep_ratio: True # Maintain aspect ratio
+
+            BoxLayout:
+                orientation: 'vertical'
+
+
+                ScrollView:
+
+                    MDBoxLayout:
+                        orientation: 'vertical'
+                        padding: "15dp"
+                        spacing: "15dp"
+                        size_hint_y: None
+                        height: self.minimum_height
+
+                         # === Top Bar z ustawieniami ===
+                        RelativeLayout:
+                            size_hint_y: None
+                            height: "56dp"
+
+                            MDLabel:
+                                text: "Profile"
+                                font_size: "26sp"
+                                bold: True
+                                theme_text_color: "Custom"
+                                text_color: "FFFFFF"
+                                pos_hint: {"x": 0, "center_y": 0.5}
+                                size_hint: 1, None
+                                size: self.texture_size
+
+                            MDIconButton:
+                                icon: "cog"
+                                theme_text_color: "Custom"
+                                text_color: "FFFFFF"
+                                size_hint: None, None
+                                size: "48dp", "48dp"
+                                pos_hint: {"right": 1, "center_y": 0.5}
+                                on_release: app.root.current = 'settings'
+
+
+
+                        # === Header - Avatar + Nazwa użytkownika ===
+                        MDBoxLayout:
+                            orientation: 'horizontal'
+                            size_hint_y: None
+                            height: "100dp"
+                            spacing: "15dp"
+
+                            # Avatar (placeholder)
+                            MDCard:
+                                size_hint: None, None
+                                size: "80dp", "80dp"
+                                radius: [40,]  # Okrągły
+                                md_bg_color: "1C4A42"
+
+                                MDIcon:
+                                    icon: "account"
+                                    pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                                    icon_size: "50sp"
+                                    theme_text_color: "Custom"
+                                    text_color: "14B8A6"
+
+                            # Nazwa + Stats button
+                            MDBoxLayout:
+                                orientation: 'vertical'
+                                spacing: "8dp"
+
+                                MDLabel:
+                                    text: "ANDRZEJ"  # TODO: z backendu
+                                    font_style: "H5"
+                                    bold: True
+                                    theme_text_color: "Custom"
+                                    text_color: "FFFFFF"
+                                    size_hint_y: None
+                                    height: self.texture_size[1]
+
+                                MDLabel:
+                                    text: "Member since Dec 2024"
+                                    font_size: "12sp"
+                                    theme_text_color: "Custom"
+                                    text_color: "AAAAAA"
+                                    size_hint_y: None
+                                    height: self.texture_size[1]
+
+                                MDBoxLayout:
+                                    size_hint_y: None
+                                    height: "35dp"
+                                    spacing: "8dp"
+
+                                    MDRaisedButton:
+                                        text: "Statistics"
+                                        icon: "chart-bar"
+                                        size_hint_x: 0.5
+                                        md_bg_color: "14B8A6"
+                                        theme_text_color: "Custom"
+                                        text_color: "FFFFFF"
+                                        font_size: "11sp"
+                                        # TODO: Pełne statystyki
+
+                                    MDRaisedButton:
+                                        text: "Exercises"
+                                        icon: "dumbbell"
+                                        size_hint_x: 0.5
+                                        md_bg_color: "14B8A6"
+                                        theme_text_color: "Custom"
+                                        text_color: "FFFFFF"
+                                        font_size: "11sp"
+                                        on_release: app.root.current = 'exercise_library'
+
+                        # === Grid statystyk (3x/week, 5x/week z makiety) ===
+                        MDLabel:
+                            text: "Quick Stats"
+                            font_style: "H6"
+                            theme_text_color: "Custom"
+                            text_color: "FFFFFF"
+                            size_hint_y: None
+                            height: "35dp"
+
+                        MDGridLayout:
+                            cols: 2
+                            rows: 2
+                            spacing: "10dp"
+                            size_hint_y: None
+                            height: "180dp"
+
+                            # 3X/WEEK (z makiety)
+                            StatCard:
+                                stat_name: "Frequency"
+                                stat_value: "3X/WEEK"
+                                icon_name: "calendar-week"
+                                accent_color: "8B5CF6"  # Fioletowy z makiety
+
+                            # 5X/WEEK (z makiety - max streak)
+                            StatCard:
+                                stat_name: "Best Streak"
+                                stat_value: "5 Days"
+                                icon_name: "fire"
+                                accent_color: "EC4899"  # Różowy
+
+                            # Total Workouts
+                            StatCard:
+                                stat_name: "Total Workouts"
+                                stat_value: "127"
+                                icon_name: "chart-line-variant"
+                                accent_color: "14B8A6"  # Cyan
+
+                            # Total Volume
+                            StatCard:
+                                stat_name: "Total Volume"
+                                stat_value: "1.2M kg"
+                                icon_name: "weight-kilogram"
+                                accent_color: "14B8A6"
+
+                        # === Wykresy (z makiety - słupkowy + kołowy) ===
+                        MDLabel:
+                            text: "Activity Overview"
+                            font_style: "H6"
+                            theme_text_color: "Custom"
+                            text_color: "FFFFFF"
+                            size_hint_y: None
+                            height: "35dp"
+
+                        MDCard:
+                            orientation: 'vertical'
+                            padding: "15dp"
+                            md_bg_color: "094036"
+                            line_color: "428C7F"
+                            style: "outlined"
+                            radius: [15,]
+                            size_hint_y: None
+                            height: "250dp"
+
+                            # Placeholder na wykres słupkowy (z makiety)
+                            Image:
+                                source: "assets/image.png"  # TODO: Wykres słupkowy aktywności
+                                size_hint: None, None
+                                size: "300dp", "180dp"
+                                pos_hint: {"center_x": 0.5}
+
+                            MDLabel:
+                                text: "[Chart: Weekly workout frequency + Volume pie chart]"
+                                halign: "center"
+                                font_size: "11sp"
+                                theme_text_color: "Custom"
+                                text_color: "AAAAAA"
+
+                        # === Personal Records (Top 5) ===
+                        MDBoxLayout:
+                            size_hint_y: None
+                            height: "40dp"
+
+                            MDLabel:
+                                text: "Personal Records"
+                                font_style: "H6"
+                                theme_text_color: "Custom"
+                                text_color: "FFFFFF"
+                                size_hint_x: 0.7
+
+                            MDFlatButton:
+                                text: "View All"
+                                theme_text_color: "Custom"
+                                text_color: "14B8A6"
+                                size_hint_x: 0.3
+
+                        # Top 5 PRs
+                        PersonalRecordCard:
+                            exercise_name: "Bench Press"
+                            pr_value: "100kg x 5"
+                            date_achieved: "Dec 27, 2025"
+
+                        PersonalRecordCard:
+                            exercise_name: "Deadlift"
+                            pr_value: "180kg x 3"
+                            date_achieved: "Dec 20, 2025"
+
+                        PersonalRecordCard:
+                            exercise_name: "Squat"
+                            pr_value: "140kg x 6"
+                            date_achieved: "Dec 15, 2025"
+
+                        # === Body Measurements Quick Access ===
+                        MDBoxLayout:
+                            size_hint_y: None
+                            height: "40dp"
+
+                            MDLabel:
+                                text: "Body Measurements"
+                                font_style: "H6"
+                                theme_text_color: "Custom"
+                                text_color: "FFFFFF"
+                                size_hint_x: 0.7
+
+                            MDFlatButton:
+                                text: "View All"
+                                theme_text_color: "Custom"
+                                text_color: "14B8A6"
+                                size_hint_x: 0.3
+                                on_release: app.root.current = 'body_measurements'
+
+                        MDGridLayout:
+                            cols: 2
+                            spacing: "10dp"
+                            size_hint_y: None
+                            height: "100dp"
+
+                            BodyMeasurementItem:
+                                measurement_name: "Weight"
+                                current_value: "75.5 kg"
+                                change_value: "-2.3 kg"
+                                is_positive_change: True
+
+                            BodyMeasurementItem:
+                                measurement_name: "Body Fat"
+                                current_value: "14.2%"
+                                change_value: "-1.8%"
+                                is_positive_change: True
+
+                        # === Progress Photos ===
+                        MDBoxLayout:
+                            size_hint_y: None
+                            height: "40dp"
+
+                            MDLabel:
+                                text: "Progress Photos"
+                                font_style: "H6"
+                                theme_text_color: "Custom"
+                                text_color: "FFFFFF"
+                                size_hint_x: 0.7
+
+                            MDFlatButton:
+                                text: "View All"
+                                theme_text_color: "Custom"
+                                text_color: "14B8A6"
+                                size_hint_x: 0.3
+                                on_release: app.root.current = 'progress_photos'
+
+                        # Grid zdjęć (placeholder)
+                        MDGridLayout:
+                            cols: 3
+                            spacing: "8dp"
+                            size_hint_y: None
+                            height: "100dp"
+
+                            # Placeholder photos
+                            MDCard:
+                                radius: [10,]
+                                md_bg_color: "1C4A42"
+                                MDIcon:
+                                    icon: "camera"
+                                    pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                                    icon_size: "30sp"
+                                    theme_text_color: "Custom"
+                                    text_color: "AAAAAA"
+
+                            MDCard:
+                                radius: [10,]
+                                md_bg_color: "1C4A42"
+                                MDIcon:
+                                    icon: "camera"
+                                    pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                                    icon_size: "30sp"
+                                    theme_text_color: "Custom"
+                                    text_color: "AAAAAA"
+
+                            MDCard:
+                                radius: [10,]
+                                md_bg_color: "1C4A42"
+                                MDIcon:
+                                    icon: "camera"
+                                    pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                                    icon_size: "30sp"
+                                    theme_text_color: "Custom"
+                                    text_color: "AAAAAA"
+
+                # === Bottom Nav Bar ===
+                BottomNavBar:
+                    NavButton:
+                        text: 'Home'
+                        icon_source: 'assets/Home.png'
+                        screen_name: 'menu_glowne'
+                    NavButton:
+                        text: 'Workout'
+                        icon_source: 'assets/Workout.png'
+                        screen_name: 'trening'
+                    NavButton:
+                        text: 'Profile'
+                        icon_source: 'assets/image.png'
+                        screen_name: 'profile'
+
+
+# --- Ekran Aktywnego Treningu (Active Routine) ---
+# Wzorowany na Hevy, stylizowany zgodnie z makietą PowerGym
+<ActiveRoutineScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        # === Top Bar z przyciskiem Finish ===
+        MDBoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: "56dp"
+            md_bg_color: "094036"  # Ciemny zielony z makiety
+            padding: "8dp", "0dp"
+            spacing: "10dp"
+
+            # Przycisk cofnij (lewy)
+            MDIconButton:
+                icon: "chevron-down"
+                theme_text_color: "Custom"
+                text_color: "FFFFFF"
+                size_hint: None, None
+                size: "48dp", "48dp"
+                pos_hint: {"center_y": 0.5}
+                on_release: app.root.current = 'trening'
+
+            # Tytuł wyśrodkowany
+            MDLabel:
+                text: "Log Workout"
+                font_size: "20sp"
+                bold: True
+                theme_text_color: "Custom"
+                text_color: "FFFFFF"
+                halign: "center"
+                valign: "middle"
+
+            # Przycisk Finish (prawy)
+            MDTextButton:
+                text: "Finish"
+                theme_text_color: "Custom"
+                text_color: "0A84FF"  # Niebieski akcent (jak w Hevy)
+                size_hint: None, None
+                size: "80dp", "48dp"
+                pos_hint: {"center_y": 0.5}
+                on_release: app.root.current = 'workout_summary'  # TODO: Zakończ trening i przejdź do podsumowania
+
+        # === Stats Bar - pokazuje Duration, Volume, Sets ===
+        MDBoxLayout:
+            size_hint_y: None
+            height: "70dp"
+            padding: "15dp", "10dp"
+            spacing: "20dp"
+            md_bg_color: "0A2F28"  # Tło z makiety
+
+            # Duration (czas treningu)
+            MDBoxLayout:
+                orientation: 'vertical'
+                size_hint_x: 0.33
+
+                MDLabel:
+                    text: "Duration"
+                    halign: "center"
+                    font_size: "12sp"
+                    theme_text_color: "Custom"
+                    text_color: "AAAAAA"
+
+                MDLabel:
+                    id: duration_label
+                    text: "0m 5s"  # Będzie aktualizowane przez timer
+                    halign: "center"
+                    font_style: "H6"
+                    theme_text_color: "Custom"
+                    text_color: "FFFFFF"
+
+            # Volume (całkowity ciężar)
+            MDBoxLayout:
+                orientation: 'vertical'
+                size_hint_x: 0.33
+
+                MDLabel:
+                    text: "Volume"
+                    halign: "center"
+                    font_size: "12sp"
+                    theme_text_color: "Custom"
+                    text_color: "AAAAAA"
+
+                MDLabel:
+                    id: volume_label
+                    text: "0 kg"  # Będzie obliczane z serii
+                    halign: "center"
+                    font_style: "H6"
+                    theme_text_color: "Custom"
+                    text_color: "14B8A6"  # Cyan z makiety
+
+            # Sets (liczba serii)
+            MDBoxLayout:
+                orientation: 'vertical'
+                size_hint_x: 0.33
+
+                MDLabel:
+                    text: "Sets"
+                    halign: "center"
+                    font_size: "12sp"
+                    theme_text_color: "Custom"
+                    text_color: "AAAAAA"
+
+                MDLabel:
+                    id: sets_label
+                    text: "0"  # Będzie zliczane
+                    halign: "center"
+                    font_style: "H6"
+                    theme_text_color: "Custom"
+                    text_color: "FFFFFF"
+
+        # === Scrollable lista ćwiczeń ===
+        ScrollView:
+            MDList:
+                id: active_exercise_list
+
+                # Przykładowe ćwiczenie (będzie generowane dynamicznie z backendu)
+                ActiveExerciseWidget:
+                    exercise_name: "Sumo Deadlift"
+
+# === Active Exercise Widget - pojedyncze ćwiczenie podczas treningu ===
+# Zawiera: obrazek, nazwę, notatki, rest timer, serie z type/RPE
+<ActiveExerciseWidget>:
+    orientation: 'vertical'
+    size_hint_y: None
+    height: self.minimum_height
+    padding: "15dp"
+    spacing: "10dp"
+    md_bg_color: "094036"  # Tło karty z makiety
+    line_color: "428C7F"  # Border z makiety
+    style: "outlined"
+    radius: [15,]
+
+    # === Header: Obrazek + Nazwa ćwiczenia + Menu ===
+    MDBoxLayout:
+        size_hint_y: None
+        height: "60dp"
+        spacing: "10dp"
+
+        # Placeholder na obrazek ćwiczenia (później z backendu)
+        Image:
+            source: "assets/image.png"  # TODO: Zastąpić prawdziwym obrazkiem/GIFem
+            size_hint: None, None
+            size: "50dp", "50dp"
+            radius: [10,]
+
+        MDBoxLayout:
+            orientation: 'vertical'
+
+            MDLabel:
+                text: root.exercise_name
+                font_style: "H6"
+                theme_text_color: "Custom"
+                text_color: "FFFFFF"
+
+            # Subtitle - kategoria/grupa mięśniowa (opcjonalne)
+            MDLabel:
+                text: "Back, Legs"  # TODO: Dynamicznie z backendu
+                font_size: "11sp"
+                theme_text_color: "Custom"
+                text_color: "AAAAAA"
+
+        # Menu 3 kropki (edycja/usuwanie ćwiczenia)
+        MDIconButton:
+            icon: "dots-vertical"
+            theme_text_color: "Custom"
+            text_color: "FFFFFF"
+
+    # === Pole notatek do ćwiczenia ===
+    MDTextField:
+        hint_text: "Add notes here..."
+        mode: "fill"
+        size_hint_y: None
+        height: "40dp"
+        multiline: False
+
+    # === Rest Timer ===
+    MDBoxLayout:
+        size_hint_y: None
+        height: "35dp"
+        spacing: "10dp"
+
+        MDIcon:
+            icon: "timer-outline"
+            size_hint: None, None
+            size: "24dp", "24dp"
+            theme_text_color: "Custom"
+            text_color: "14B8A6"  # Cyan z makiety
+
+        MDLabel:
+            text: "Rest Timer: 1min 30s"  # TODO: Dynamiczny timer
+            font_size: "13sp"
+            theme_text_color: "Custom"
+            text_color: "AAAAAA"
+
+        Widget:
+            size_hint_x: 1
+
+        # Przyciski kontroli timera
+        MDIconButton:
+            icon: "play"
+            size_hint: None, None
+            size: "30dp", "30dp"
+            theme_text_color: "Custom"
+            text_color: "14B8A6"
+
+        MDIconButton:
+            icon: "stop"
+            size_hint: None, None
+            size: "30dp", "30dp"
+            theme_text_color: "Custom"
+            text_color: "FF5252"
+
+    # === Separator ===
+    Widget:
+        size_hint_y: None
+        height: "1dp"
+        canvas.before:
+            Color:
+                rgba: 0.26, 0.55, 0.50, 0.3  # Subtelna linia
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+    # === Header tabeli serii (SET, PREVIOUS, KG, REPS, ✓) ===
+    MDBoxLayout:
+        size_hint_y: None
+        height: "35dp"
+        spacing: "5dp"
+        padding: "5dp", "0dp"
+
+        MDLabel:
+            text: "SET"
+            font_size: "11sp"
+            halign: "center"
+            theme_text_color: "Custom"
+            text_color: "AAAAAA"
+            size_hint_x: 0.15
+
+        MDLabel:
+            text: "PREVIOUS"
+            font_size: "11sp"
+            halign: "center"
+            theme_text_color: "Custom"
+            text_color: "AAAAAA"
+            size_hint_x: 0.25
+
+        MDLabel:
+            text: "KG"
+            font_size: "11sp"
+            halign: "center"
+            theme_text_color: "Custom"
+            text_color: "AAAAAA"
+            size_hint_x: 0.20
+
+        MDLabel:
+            text: "REPS"
+            font_size: "11sp"
+            halign: "center"
+            theme_text_color: "Custom"
+            text_color: "AAAAAA"
+            size_hint_x: 0.20
+
+        MDLabel:
+            text: "✓"
+            font_size: "11sp"
+            halign: "center"
+            theme_text_color: "Custom"
+            text_color: "AAAAAA"
+            size_hint_x: 0.20
+
+    # === Serie (przykładowe - będą generowane dynamicznie) ===
+    ExerciseSetWidget:
+        set_number: "1"
+        previous: "150kg x 4"
+        kg: "150"
+        reps: "4"
+
+    ExerciseSetWidget:
+        set_number: "2"
+        previous: "150kg x 3"
+        kg: "150"
+        reps: "3"
+
+    ExerciseSetWidget:
+        set_number: "3"
+        previous: "140kg x 5"
+        kg: "140"
+        reps: "5"
+
+    # === Przycisk dodania serii ===
+    MDRaisedButton:
+        text: "+ Add Set"
+        size_hint_y: None
+        height: "40dp"
+        md_bg_color: 0, 0, 0, 0  # Przezroczyste tło
+        line_color: "14B8A6"  # Cyan border z makiety
+        line_width: 1.5
+        theme_text_color: "Custom"
+        text_color: "14B8A6"
+
+# === Exercise Set Widget - pojedyncza seria w ćwiczeniu ===
+# Zawiera: numer serii, previous, kg, reps, checkbox
+<ExerciseSetWidget>:
+    size_hint_y: None
+    height: "45dp"
+    spacing: "5dp"
+    padding: "5dp", "0dp"
+
+    # SET - Numer serii
+    MDLabel:
+        text: root.set_number
+        halign: "center"
+        valign: "center"
+        size_hint_x: 0.15
+        theme_text_color: "Custom"
+        text_color: "FFFFFF"
+
+    # PREVIOUS - Poprzednia wartość z ostatniego treningu
+    MDLabel:
+        text: root.previous
+        halign: "center"
+        valign: "center"
+        size_hint_x: 0.25
+        font_size: "12sp"
+        theme_text_color: "Custom"
+        text_color: "AAAAAA"  # Szary (historical data)
+
+    # KG - Pole do wpisania ciężaru
+    MDTextField:
+        text: root.kg
+        mode: "fill"
+        size_hint_x: 0.20
+        size_hint_y: None
+        height: "35dp"
+        font_size: "13sp"
+        hint_text: "kg"
+        input_filter: "float"  # Tylko liczby
+        halign: "center"
+
+    # REPS - Pole do wpisania powtórzeń
+    MDTextField:
+        text: root.reps
+        mode: "fill"
+        size_hint_x: 0.20
+        size_hint_y: None
+        height: "35dp"
+        font_size: "13sp"
+        hint_text: "reps"
+        input_filter: "int"  # Tylko liczby całkowite
+        halign: "center"
+
+    # CHECKMARK - Checkbox do zaznaczenia ukończonej serii
+    MDIconButton:
+        icon: "check-circle-outline"  # Puste kółko, po kliknięciu: "check-circle"
+        size_hint_x: 0.20
+        size_hint: None, None
+        size: "35dp", "35dp"
+        theme_text_color: "Custom"
+        text_color: "14B8A6"  # Cyan z makiety
+        # TODO: Toggle między outline a filled po kliknięciu
+
+
+# ======================================================================
+# === WORKOUT SUMMARY SCREEN - Podsumowanie po zakończeniu treningu ===
+# ======================================================================
+# Wyświetla się po kliknięciu "Finish" w Active Routine Screen
+# Pokazuje: czas, volume, serie, PRs, breakdown ćwiczeń
+
+<WorkoutSummaryScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        # === Top Bar z nazwą treningu ===
+        MDTopAppBar:
+            title: "Workout Summary"
+            md_bg_color: "094036"
+            left_action_items: [["close", lambda x: setattr(app.root, 'current', 'menu_glowne')]]
+
+        ScrollView:
+            MDBoxLayout:
+                orientation: 'vertical'
+                padding: "15dp"
+                spacing: "15dp"
+                size_hint_y: None
+                height: self.minimum_height
+
+                # === Header - Nazwa treningu i data ===
+                MDCard:
+                    orientation: 'vertical'
+                    padding: "20dp"
+                    md_bg_color: "094036"
+                    line_color: "428C7F"
+                    style: "outlined"
+                    radius: [15,]
+                    size_hint_y: None
+                    height: "120dp"
+
+                    MDLabel:
+                        text: "PULL - FRIDAY"  # TODO: Dynamicznie z backendu
+                        font_style: "H5"
+                        theme_text_color: "Custom"
+                        text_color: "FFFFFF"
+                        size_hint_y: None
+                        height: self.texture_size[1]
+
+                    Widget:
+                        size_hint_y: 0.3
+
+                    MDLabel:
+                        text: "December 29, 2025 • 14:30"  # TODO: Dynamicznie
+                        font_size: "13sp"
+                        theme_text_color: "Custom"
+                        text_color: "AAAAAA"
+
+                # === Statystyki treningu ===
+                MDLabel:
+                    text: "Workout Stats"
+                    font_style: "H6"
+                    theme_text_color: "Custom"
+                    text_color: "FFFFFF"
+                    size_hint_y: None
+                    height: "30dp"
+
+                # Grid ze statystykami
+                MDGridLayout:
+                    cols: 2
+                    rows: 2
+                    spacing: "10dp"
+                    size_hint_y: None
+                    height: "180dp"
+
+                    # Duration
+                    MDCard:
+                        orientation: 'vertical'
+                        padding: "15dp"
+                        md_bg_color: "094036"
+                        line_color: "428C7F"
+                        style: "outlined"
+                        radius: [15,]
+
+                        MDLabel:
+                            text: "Duration"
+                            font_size: "12sp"
+                            theme_text_color: "Custom"
+                            text_color: "AAAAAA"
+                            size_hint_y: None
+                            height: "20dp"
+
+                        MDLabel:
+                            text: "1h 23m"  # TODO: Z timera
+                            font_style: "H4"
+                            theme_text_color: "Custom"
+                            text_color: "14B8A6"  # Cyan
+
+                    # Volume
+                    MDCard:
+                        orientation: 'vertical'
+                        padding: "15dp"
+                        md_bg_color: "094036"
+                        line_color: "428C7F"
+                        style: "outlined"
+                        radius: [15,]
+
+                        MDLabel:
+                            text: "Total Volume"
+                            font_size: "12sp"
+                            theme_text_color: "Custom"
+                            text_color: "AAAAAA"
+                            size_hint_y: None
+                            height: "20dp"
+
+                        MDLabel:
+                            text: "11,549 kg"  # TODO: Obliczone
+                            font_style: "H4"
+                            theme_text_color: "Custom"
+                            text_color: "14B8A6"
+
+                    # Sets
+                    MDCard:
+                        orientation: 'vertical'
+                        padding: "15dp"
+                        md_bg_color: "094036"
+                        line_color: "428C7F"
+                        style: "outlined"
+                        radius: [15,]
+
+                        MDLabel:
+                            text: "Total Sets"
+                            font_size: "12sp"
+                            theme_text_color: "Custom"
+                            text_color: "AAAAAA"
+                            size_hint_y: None
+                            height: "20dp"
+
+                        MDLabel:
+                            text: "24"  # TODO: Zliczone
+                            font_style: "H4"
+                            theme_text_color: "Custom"
+                            text_color: "FFFFFF"
+
+                    # Personal Records
+                    MDCard:
+                        orientation: 'vertical'
+                        padding: "15dp"
+                        md_bg_color: "094036"
+                        line_color: "428C7F"
+                        style: "outlined"
+                        radius: [15,]
+
+                        MDLabel:
+                            text: "New PRs"
+                            font_size: "12sp"
+                            theme_text_color: "Custom"
+                            text_color: "AAAAAA"
+                            size_hint_y: None
+                            height: "20dp"
+
+                        MDLabel:
+                            text: "4"  # TODO: Wykryte PRs
+                            font_style: "H4"
+                            theme_text_color: "Custom"
+                            text_color: "EC4899"  # Różowy z makiety
+
+                # === Breakdown ćwiczeń ===
+                MDLabel:
+                    text: "Exercise Breakdown"
+                    font_style: "H6"
+                    theme_text_color: "Custom"
+                    text_color: "FFFFFF"
+                    size_hint_y: None
+                    height: "40dp"
+
+                # Lista ćwiczeń z wykonanymi seriami
+                MDCard:
+                    orientation: 'vertical'
+                    padding: "15dp"
+                    md_bg_color: "094036"
+                    line_color: "428C7F"
+                    style: "outlined"
+                    radius: [15,]
+                    size_hint_y: None
+                    height: "200dp"
+
+                    # Przykładowe ćwiczenie - będzie generowane z backendu
+                    MDBoxLayout:
+                        orientation: 'vertical'
+                        spacing: "5dp"
+                        size_hint_y: None
+                        height: "60dp"
+
+                        MDLabel:
+                            text: "Sumo Deadlift"
+                            font_style: "Subtitle1"
+                            theme_text_color: "Custom"
+                            text_color: "FFFFFF"
+
+                        MDLabel:
+                            text: "3 sets • 150kg x 4, 150kg x 3, 140kg x 5"
+                            font_size: "12sp"
+                            theme_text_color: "Custom"
+                            text_color: "AAAAAA"
+
+                    Widget:
+                        size_hint_y: None
+                        height: "1dp"
+                        canvas.before:
+                            Color:
+                                rgba: 0.26, 0.55, 0.50, 0.3
+                            Rectangle:
+                                pos: self.pos
+                                size: self.size
+
+                    # Więcej ćwiczeń... (dynamicznie)
+                    MDLabel:
+                        text: "+ 5 more exercises"  # TODO: Dynamicznie
+                        font_size: "12sp"
+                        halign: "center"
+                        theme_text_color: "Custom"
+                        text_color: "14B8A6"
+
+                # === Placeholder na wykres grup mięśniowych ===
+                MDLabel:
+                    text: "Muscle Groups"
+                    font_style: "H6"
+                    theme_text_color: "Custom"
+                    text_color: "FFFFFF"
+                    size_hint_y: None
+                    height: "40dp"
+
+                MDCard:
+                    orientation: 'vertical'
+                    padding: "20dp"
+                    md_bg_color: "094036"
+                    line_color: "428C7F"
+                    style: "outlined"
+                    radius: [15,]
+                    size_hint_y: None
+                    height: "150dp"
+
+                    # TODO: Wykres kołowy/słupkowy grup mięśniowych
+                    Image:
+                        source: "assets/image.png"  # Placeholder
+                        size_hint: None, None
+                        size: "100dp", "100dp"
+                        pos_hint: {"center_x": 0.5}
+
+                    MDLabel:
+                        text: "[Chart: Muscle group distribution]"
+                        halign: "center"
+                        font_size: "12sp"
+                        theme_text_color: "Custom"
+                        text_color: "AAAAAA"
+
+                # === Przyciski akcji ===
+                MDBoxLayout:
+                    orientation: 'horizontal'
+                    spacing: "10dp"
+                    size_hint_y: None
+                    height: "50dp"
+                    padding: "0dp", "20dp"
+
+                    # Discard - usuń trening
+                    MDRaisedButton:
+                        text: "Discard"
+                        size_hint_x: 0.4
+                        md_bg_color: 0, 0, 0, 0
+                        line_color: "FF5252"  # Czerwony
+                        line_width: 1.5
+                        theme_text_color: "Custom"
+                        text_color: "FF5252"
+                        on_release: app.root.current = 'trening'
+
+                    # Save - zapisz trening
+                    MDRaisedButton:
+                        text: "Save Workout"
+                        size_hint_x: 0.6
+                        md_bg_color: "14B8A6"  # Cyan z makiety
+                        theme_text_color: "Custom"
+                        text_color: "FFFFFF"
+                        on_release: app.root.current = 'menu_glowne'
+
+
+# ======================================================================
+# === WORKOUT HISTORY SCREEN - Historia wszystkich treningów =========
+# ======================================================================
+# Pokazuje listę/kalendarz przeszłych sesji treningowych
+# Umożliwia przeglądanie szczegółów i analizę postępów
+
+<WorkoutHistoryScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        # === Top Bar ===
+        MDTopAppBar:
+            title: "Workout History"
+            md_bg_color: "094036"
+            left_action_items: [["chevron-left", lambda x: setattr(app.root, 'current', 'menu_glowne')]]
+            right_action_items: [["calendar", lambda x: print("Calendar view")]]
+
+        # === Filter bar - sortowanie i filtry ===
+        MDBoxLayout:
+            size_hint_y: None
+            height: "60dp"
+            padding: "15dp", "10dp"
+            spacing: "10dp"
+            md_bg_color: "0A2F28"
+
+            # Dropdown z filtrami (All, This Week, This Month, etc.)
+            MDRaisedButton:
+                text: "All Workouts"
+                icon: "filter-outline"
+                size_hint_x: 0.6
+                md_bg_color: "1C4A42"
+                theme_text_color: "Custom"
+                text_color: "FFFFFF"
+                # TODO: Dropdown menu
+
+            # Przycisk sortowania
+            MDIconButton:
+                icon: "sort"
+                theme_text_color: "Custom"
+                text_color: "14B8A6"
+
+            # Przycisk widoku kalendarza/listy
+            MDIconButton:
+                icon: "view-list"
+                theme_text_color: "Custom"
+                text_color: "14B8A6"
+
+        # === Lista treningów ===
+        ScrollView:
+            MDBoxLayout:
+                orientation: 'vertical'
+                padding: "15dp"
+                spacing: "15dp"
+                size_hint_y: None
+                height: self.minimum_height
+
+                # === Separator z datą ===
+                MDLabel:
+                    text: "DECEMBER 2025"
+                    font_size: "12sp"
+                    bold: True
+                    theme_text_color: "Custom"
+                    text_color: "AAAAAA"
+                    size_hint_y: None
+                    height: "30dp"
+
+                # === Karta treningu - przykład 1 ===
+                MDCard:
+                    orientation: 'vertical'
+                    padding: "15dp"
+                    md_bg_color: "094036"
+                    line_color: "428C7F"
+                    style: "outlined"
+                    radius: [15,]
+                    size_hint_y: None
+                    height: "140dp"
+                    on_release: app.root.current = 'workout_summary'  # Zobacz szczegóły
+
+                    # Header
+                    MDBoxLayout:
+                        size_hint_y: None
+                        height: "40dp"
+                        spacing: "10dp"
+
+                        MDBoxLayout:
+                            orientation: 'vertical'
+
+                            MDLabel:
+                                text: "PULL - FRIDAY"
+                                font_style: "H6"
+                                theme_text_color: "Custom"
+                                text_color: "FFFFFF"
+
+                            MDLabel:
+                                text: "December 27 • 14:30"
+                                font_size: "11sp"
+                                theme_text_color: "Custom"
+                                text_color: "AAAAAA"
+
+                        Widget:
+                            size_hint_x: 1
+
+                        # Personal Records badge
+                        MDChip:
+                            text: "4 PRs"
+                            size_hint: None, None
+                            size: "60dp", "30dp"
+                            md_bg_color: "EC4899"  # Różowy
+                            theme_text_color: "Custom"
+                            text_color: "FFFFFF"
+                            icon: "trophy"
+
+                    Widget:
+                        size_hint_y: 0.2
+
+                    # Stats bar
+                    MDBoxLayout:
+                        size_hint_y: None
+                        height: "50dp"
+                        spacing: "15dp"
+
+                        # Duration
+                        MDBoxLayout:
+                            orientation: 'vertical'
+                            size_hint_x: 0.33
+
+                            MDIcon:
+                                icon: "clock-outline"
+                                size_hint: None, None
+                                size: "18dp", "18dp"
+                                theme_text_color: "Custom"
+                                text_color: "14B8A6"
+                                pos_hint: {"center_x": 0.5}
+
+                            MDLabel:
+                                text: "1h 23m"
+                                halign: "center"
+                                font_size: "12sp"
+                                theme_text_color: "Custom"
+                                text_color: "FFFFFF"
+
+                        # Volume
+                        MDBoxLayout:
+                            orientation: 'vertical'
+                            size_hint_x: 0.33
+
+                            MDIcon:
+                                icon: "weight-kilogram"
+                                size_hint: None, None
+                                size: "18dp", "18dp"
+                                theme_text_color: "Custom"
+                                text_color: "14B8A6"
+                                pos_hint: {"center_x": 0.5}
+
+                            MDLabel:
+                                text: "11,549 kg"
+                                halign: "center"
+                                font_size: "12sp"
+                                theme_text_color: "Custom"
+                                text_color: "FFFFFF"
+
+                        # Sets
+                        MDBoxLayout:
+                            orientation: 'vertical'
+                            size_hint_x: 0.33
+
+                            MDIcon:
+                                icon: "format-list-numbered"
+                                size_hint: None, None
+                                size: "18dp", "18dp"
+                                theme_text_color: "Custom"
+                                text_color: "14B8A6"
+                                pos_hint: {"center_x": 0.5}
+
+                            MDLabel:
+                                text: "24 sets"
+                                halign: "center"
+                                font_size: "12sp"
+                                theme_text_color: "Custom"
+                                text_color: "FFFFFF"
+
+                # === Karta treningu - przykład 2 ===
+                MDCard:
+                    orientation: 'vertical'
+                    padding: "15dp"
+                    md_bg_color: "094036"
+                    line_color: "428C7F"
+                    style: "outlined"
+                    radius: [15,]
+                    size_hint_y: None
+                    height: "140dp"
+
+                    # Header
+                    MDBoxLayout:
+                        size_hint_y: None
+                        height: "40dp"
+
+                        MDBoxLayout:
+                            orientation: 'vertical'
+
+                            MDLabel:
+                                text: "PUSH - MONDAY"
+                                font_style: "H6"
+                                theme_text_color: "Custom"
+                                text_color: "FFFFFF"
+
+                            MDLabel:
+                                text: "December 25 • 10:15"
+                                font_size: "11sp"
+                                theme_text_color: "Custom"
+                                text_color: "AAAAAA"
+
+                    Widget:
+                        size_hint_y: 0.2
+
+                    # Stats bar
+                    MDBoxLayout:
+                        size_hint_y: None
+                        height: "50dp"
+                        spacing: "15dp"
+
+                        MDBoxLayout:
+                            orientation: 'vertical'
+                            size_hint_x: 0.33
+
+                            MDIcon:
+                                icon: "clock-outline"
+                                size_hint: None, None
+                                size: "18dp", "18dp"
+                                theme_text_color: "Custom"
+                                text_color: "14B8A6"
+                                pos_hint: {"center_x": 0.5}
+
+                            MDLabel:
+                                text: "58m"
+                                halign: "center"
+                                font_size: "12sp"
+                                theme_text_color: "Custom"
+                                text_color: "FFFFFF"
+
+                        MDBoxLayout:
+                            orientation: 'vertical'
+                            size_hint_x: 0.33
+
+                            MDIcon:
+                                icon: "weight-kilogram"
+                                size_hint: None, None
+                                size: "18dp", "18dp"
+                                theme_text_color: "Custom"
+                                text_color: "14B8A6"
+                                pos_hint: {"center_x": 0.5}
+
+                            MDLabel:
+                                text: "8,420 kg"
+                                halign: "center"
+                                font_size: "12sp"
+                                theme_text_color: "Custom"
+                                text_color: "FFFFFF"
+
+                        MDBoxLayout:
+                            orientation: 'vertical'
+                            size_hint_x: 0.33
+
+                            MDIcon:
+                                icon: "format-list-numbered"
+                                size_hint: None, None
+                                size: "18dp", "18dp"
+                                theme_text_color: "Custom"
+                                text_color: "14B8A6"
+                                pos_hint: {"center_x": 0.5}
+
+                            MDLabel:
+                                text: "18 sets"
+                                halign: "center"
+                                font_size: "12sp"
+                                theme_text_color: "Custom"
+                                text_color: "FFFFFF"
+
+                # === Separator z datą - starszy miesiąc ===
+                MDLabel:
+                    text: "NOVEMBER 2025"
+                    font_size: "12sp"
+                    bold: True
+                    theme_text_color: "Custom"
+                    text_color: "AAAAAA"
+                    size_hint_y: None
+                    height: "30dp"
+
+                # === Placeholder dla więcej treningów ===
+                MDLabel:
+                    text: "+ 15 more workouts"
+                    halign: "center"
+                    font_size: "13sp"
+                    theme_text_color: "Custom"
+                    text_color: "14B8A6"
+                    size_hint_y: None
+                    height: "40dp"
+
+        # === Bottom Nav Bar ===
+        BottomNavBar:
+            NavButton:
+                text: 'Home'
+                icon_source: 'assets/Home.png'
+                screen_name: 'menu_glowne'
+            NavButton:
+                text: 'Workout'
+                icon_source: 'assets/Workout.png'
+                screen_name: 'trening'
+            NavButton:
+                text: 'Profile'
+                icon_source: 'assets/image.png'
+                screen_name: 'profile'
+
+
+# ======================================================================
+# === EXERCISE LIBRARY SCREEN - Biblioteka wszystkich ćwiczeń =========
+# ======================================================================
+# Wzorowana na Hevy Exercise Library i makiecie PowerGym (ekran EXERCISES)
+# Pokazuje 400+ ćwiczeń z filtrami i wyszukiwaniem
+
+<ExerciseLibraryScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+
+
+        # === Background z logo (jak w makiecie) ===
+        canvas.before:
+            # Tło gradient
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                source: 'assets/Tło.png'
+
+        RelativeLayout:
+            # Logo w tle (przeźroczyste)
+            Image:
+                source: 'assets/Logo.png'
+                opacity: 0.3
+                pos_hint: {'center_x': 0.5, 'top': 1.15}
+                size_hint: (1, 0.5)
+                allow_stretch: True
+                keep_ratio: True
+
+            BoxLayout:
+                orientation: 'vertical'
+
+                # === Top Bar ===
+                MDBoxLayout:
+                    orientation: 'horizontal'
+                    size_hint_y: None
+                    height: "56dp"
+                    padding: "8dp", "8dp"
+                    spacing: "10dp"
+
+                    MDIconButton:
+                        icon: "chevron-left"
+                        theme_text_color: "Custom"
+                        text_color: "FFFFFF"
+                        size_hint: None, None
+                        size: "48dp", "48dp"
+                        pos_hint: {"center_y": 0.5}
+                        on_release: app.root.current = 'routine_builder'
+
+                    Widget:
+                        # Spacer - wypycha plus w prawy górny róg
+
+                    MDIconButton:
+                        icon: "plus"
+                        theme_text_color: "Custom"
+                        text_color: "FFFFFF"
+                        size_hint: None, None
+                        size: "48dp", "48dp"
+                        pos_hint: {"center_y": 0.5}
+                        on_release: print("Add custom exercise")
+
+                # === Search Bar ===
+                MDBoxLayout:
+                    size_hint_y: None
+                    height: "70dp"
+                    padding: "15dp", "10dp"
+                    spacing: "10dp"
+
+                    MDTextField:
+                        hint_text: "Search exercises..."
+                        mode: "fill"
+                        icon_left: "magnify"
+                        size_hint_x: 0.85
+                        # TODO: Filtrowanie listy w czasie rzeczywistym
+
+                    MDRaisedButton:
+                        text: "+ Add exercise"
+                        pos_hint: {"center_x": .5}
+                        on_release: root.open_add_exercise_dialog()
+
+                    # Przycisk filtrów zaawansowanych
+                    MDIconButton:
+                        icon: "filter-variant"
+                        theme_text_color: "Custom"
+                        text_color: "14B8A6"
+                        size_hint_x: 0.15
+
+                # === Filter Chips - Muscle Groups ===
+                        MDBoxLayout:
+                            size_hint_y: None
+                            height: "50dp"
+                            padding: "15dp", "5dp"
+
+                            ScrollView:
+                                do_scroll_y: False  # tylko poziomo
+
+                                MDBoxLayout:
+                                    spacing: "8dp"
+                                    size_hint_x: None
+                                    width: self.minimum_width
+                                    # <-- TU wkładasz swoje MDChip-y
+
+
+                            # Chipy filtrów - wzorowane na Hevy
+                            MDChip:
+                                text: "All"
+                                md_bg_color: "14B8A6"  # Selected - cyan
+                                theme_text_color: "Custom"
+                                text_color: "FFFFFF"
+                                size_hint: None, None
+                                size: "60dp", "35dp"
+
+                            MDChip:
+                                text: "Chest"
+                                md_bg_color: "1C4A42"  # Unselected - dark green
+                                theme_text_color: "Custom"
+                                text_color: "AAAAAA"
+                                size_hint: None, None
+                                size: "70dp", "35dp"
+
+                            MDChip:
+                                text: "Back"
+                                md_bg_color: "1C4A42"
+                                theme_text_color: "Custom"
+                                text_color: "AAAAAA"
+                                size_hint: None, None
+                                size: "65dp", "35dp"
+
+                            MDChip:
+                                text: "Legs"
+                                md_bg_color: "1C4A42"
+                                theme_text_color: "Custom"
+                                text_color: "AAAAAA"
+                                size_hint: None, None
+                                size: "60dp", "35dp"
+
+                            MDChip:
+                                text: "Arms"
+                                md_bg_color: "1C4A42"
+                                theme_text_color: "Custom"
+                                text_color: "AAAAAA"
+                                size_hint: None, None
+                                size: "65dp", "35dp"
+
+                            MDChip:
+                                text: "Shoulders"
+                                md_bg_color: "1C4A42"
+                                theme_text_color: "Custom"
+                                text_color: "AAAAAA"
+                                size_hint: None, None
+                                size: "95dp", "35dp"
+
+                            MDChip:
+                                text: "Core"
+                                md_bg_color: "1C4A42"
+                                theme_text_color: "Custom"
+                                text_color: "AAAAAA"
+                                size_hint: None, None
+                                size: "60dp", "35dp"
+
+                        ScrollView:
+                            do_scroll_x: False
+
+                            MDList:
+                                id: exercise_library_list
+
+
+                        MDBoxLayout:
+                            orientation: "vertical"
+                            size_hint_y: None
+                            height: self.minimum_height
+                            padding: "15dp"
+                            spacing: "10dp"
+
+                            MDTextField:
+                                id: new_ex_name
+                                hint_text: "Nazwa ćwiczenia"
+                                mode: "rectangle"
+
+                            MDTextField:
+                                id: new_ex_category
+                                hint_text: "Kategoria (opcjonalnie)"
+                                mode: "rectangle"
+
+                            MDTextField:
+                                id: new_ex_desc
+                                hint_text: "Opis (opcjonalnie)"
+                                mode: "rectangle"
+                                multiline: True
+
+                            MDRaisedButton:
+                                text: "Dodaj ćwiczenie"
+                                on_release: root.add_exercise()
+
+                # === Lista ćwiczeń (scrollable) ===
+                ScrollView:
+                    MDList:
+                        id: exercise_library_list
+
+
+# === ExerciseLibraryCard Widget - pojedyncze ćwiczenie w liście ===
+<ExerciseLibraryCard>:
+    orientation: 'horizontal'
+    padding: "12dp"
+    spacing: "12dp"
+    md_bg_color: "094036"  # Ciemny zielony z makiety
+    line_color: "428C7F"
+    style: "outlined"
+    radius: [12,]
+    size_hint_y: None
+    height: "75dp"
+    on_release: app.root.current = 'exercise_detail'  # Przejdź do szczegółów
+
+    # === Ikona ćwiczenia (placeholder) ===
+    Image:
+        source: root.image_path
+        size_hint: None, None
+        size: "50dp", "50dp"
+        radius: [8,]
+
+    # === Nazwa i grupy mięśniowe ===
+    MDBoxLayout:
+        orientation: 'vertical'
+        spacing: "3dp"
+
+        MDLabel:
+            text: root.exercise_name
+            font_style: "Subtitle1"
+            bold: True
+            theme_text_color: "Custom"
+            text_color: "FFFFFF"
+            size_hint_y: None
+            height: self.texture_size[1]
+
+        # Muscle groups
+        MDLabel:
+            text: root.muscle_groups
+            font_size: "11sp"
+            theme_text_color: "Custom"
+            text_color: "14B8A6"  # Cyan
+            size_hint_y: None
+            height: self.texture_size[1]
+
+        # Equipment
+        MDLabel:
+            text: root.equipment
+            font_size: "10sp"
+            theme_text_color: "Custom"
+            text_color: "AAAAAA"
+            size_hint_y: None
+            height: self.texture_size[1]
+
+    Widget:
+        size_hint_x: 0.1
+
+    # === Przycisk ADD (jak w makiecie) ===
+    MDRaisedButton:
+        text: "ADD"
+        size_hint: None, None
+        size: "70dp", "35dp"
+        md_bg_color: "14B8A6"  # Cyan z makiety
+        theme_text_color: "Custom"
+        text_color: "FFFFFF"
+        font_size: "12sp"
+        # TODO: Dodaj ćwiczenie do aktywnego treningu lub rutyny
+
+
+# ======================================================================
+# === EXERCISE DETAIL SCREEN - Szczegóły ćwiczenia ====================
+# ======================================================================
+# Wzorowany na Hevy Exercise Detail View
+# Pokazuje instrukcję, grupy mięśniowe, historię, wykresy postępów
+
+<ExerciseDetailScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        # === Top Bar ===
+        MDTopAppBar:
+            title: "Exercise Details"
+            md_bg_color: "094036"
+            left_action_items: [["chevron-left", lambda x: setattr(app.root, 'current', 'exercise_library')]]
+            right_action_items: [["star-outline", lambda x: print("Add to favorites")]]
+
+        ScrollView:
+            MDBoxLayout:
+                orientation: 'vertical'
+                padding: "15dp"
+                spacing: "15dp"
+                size_hint_y: None
+                height: self.minimum_height
+
+                # === Wideo/GIF instruktażowy (placeholder) ===
+                MDCard:
+                    orientation: 'vertical'
+                    md_bg_color: "094036"
+                    line_color: "428C7F"
+                    style: "outlined"
+                    radius: [15,]
+                    size_hint_y: None
+                    height: "250dp"
+                    padding: "0dp"
+
+                    # Placeholder na wideo/GIF
+                    Image:
+                        source: "assets/image.png"  # TODO: GIF/wideo z backendu
+                        allow_stretch: True
+                        keep_ratio: True
+                        size_hint: (1, 1)
+
+                    # Overlay z przyciskiem play
+                    FloatLayout:
+                        MDIconButton:
+                            icon: "play-circle-outline"
+                            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                            theme_text_color: "Custom"
+                            text_color: "FFFFFF"
+                            icon_size: "64sp"
+                            # TODO: Odtwórz wideo
+
+                # === Nazwa i podstawowe info ===
+                MDLabel:
+                    text: "BENCH PRESS (BARBELL)"  # TODO: Dynamicznie
+                    font_style: "H5"
+                    bold: True
+                    theme_text_color: "Custom"
+                    text_color: "FFFFFF"
+                    size_hint_y: None
+                    height: self.texture_size[1]
+
+                MDLabel:
+                    text: "Also known as: Barbell Bench Press, Flat Bench Press"
+                    font_size: "12sp"
+                    theme_text_color: "Custom"
+                    text_color: "AAAAAA"
+                    size_hint_y: None
+                    height: self.texture_size[1]
+
+                # === Muscle Groups ===
+                MDLabel:
+                    text: "Muscle Groups"
+                    font_style: "H6"
+                    theme_text_color: "Custom"
+                    text_color: "FFFFFF"
+                    size_hint_y: None
+                    height: "35dp"
+
+                MDBoxLayout:
+                    size_hint_y: None
+                    height: "40dp"
+                    spacing: "8dp"
+
+                    # Primary muscles
+                    MDChip:
+                        text: "Chest"
+                        icon: "fire"
+                        md_bg_color: "EC4899"  # Różowy - primary
+                        theme_text_color: "Custom"
+                        text_color: "FFFFFF"
+                        size_hint: None, None
+                        size: "85dp", "35dp"
+
+                    MDChip:
+                        text: "Triceps"
+                        icon: "fire"
+                        md_bg_color: "EC4899"
+                        theme_text_color: "Custom"
+                        text_color: "FFFFFF"
+                        size_hint: None, None
+                        size: "95dp", "35dp"
+
+                    # Secondary muscles
+                    MDChip:
+                        text: "Shoulders"
+                        md_bg_color: "1C4A42"  # Ciemny - secondary
+                        theme_text_color: "Custom"
+                        text_color: "14B8A6"
+                        size_hint: None, None
+                        size: "100dp", "35dp"
+
+                # === Equipment ===
+                MDLabel:
+                    text: "Equipment"
+                    font_style: "H6"
+                    theme_text_color: "Custom"
+                    text_color: "FFFFFF"
+                    size_hint_y: None
+                    height: "35dp"
+
+                MDBoxLayout:
+                    size_hint_y: None
+                    height: "40dp"
+
+                    MDChip:
+                        text: "Barbell"
+                        icon: "dumbbell"
+                        md_bg_color: "14B8A6"
+                        theme_text_color: "Custom"
+                        text_color: "FFFFFF"
+                        size_hint: None, None
+                        size: "100dp", "35dp"
+
+                    MDChip:
+                        text: "Bench"
+                        icon: "bed"
+                        md_bg_color: "14B8A6"
+                        theme_text_color: "Custom"
+                        text_color: "FFFFFF"
+                        size_hint: None, None
+                        size: "85dp", "35dp"
+
+                # === Opis wykonania ===
+                MDLabel:
+                    text: "How to Perform"
+                    font_style: "H6"
+                    theme_text_color: "Custom"
+                    text_color: "FFFFFF"
+                    size_hint_y: None
+                    height: "35dp"
+
+                MDCard:
+                    orientation: 'vertical'
+                    padding: "15dp"
+                    md_bg_color: "094036"
+                    line_color: "428C7F"
+                    style: "outlined"
+                    radius: [15,]
+                    size_hint_y: None
+                    height: "200dp"
+
+                    MDLabel:
+                        text: "1. Lie on a flat bench with feet firmly on the ground\\n\\n2. Grip the barbell slightly wider than shoulder width\\n\\n3. Unrack the bar and lower it to mid-chest\\n\\n4. Press the bar back up to starting position\\n\\n5. Repeat for desired reps"
+                        font_size: "13sp"
+                        theme_text_color: "Custom"
+                        text_color: "FFFFFF"
+                        markup: True
+                        # TODO: Dynamiczny opis z backendu
+
+                # === Historia wykonania ===
+                MDLabel:
+                    text: "Your History"
+                    font_style: "H6"
+                    theme_text_color: "Custom"
+                    text_color: "FFFFFF"
+                    size_hint_y: None
+                    height: "35dp"
+
+                MDCard:
+                    orientation: 'vertical'
+                    padding: "15dp"
+                    md_bg_color: "094036"
+                    line_color: "428C7F"
+                    style: "outlined"
+                    radius: [15,]
+                    size_hint_y: None
+                    height: "120dp"
+
+                    # Stats
+                    MDBoxLayout:
+                        size_hint_y: None
+                        height: "60dp"
+                        spacing: "15dp"
+
+                        MDBoxLayout:
+                            orientation: 'vertical'
+
+                            MDLabel:
+                                text: "Last Performed"
+                                font_size: "11sp"
+                                theme_text_color: "Custom"
+                                text_color: "AAAAAA"
+                                size_hint_y: None
+                                height: "20dp"
+
+                            MDLabel:
+                                text: "Dec 27, 2025"
+                                font_size: "14sp"
+                                bold: True
+                                theme_text_color: "Custom"
+                                text_color: "FFFFFF"
+
+                        MDBoxLayout:
+                            orientation: 'vertical'
+
+                            MDLabel:
+                                text: "Personal Best"
+                                font_size: "11sp"
+                                theme_text_color: "Custom"
+                                text_color: "AAAAAA"
+                                size_hint_y: None
+                                height: "20dp"
+
+                            MDLabel:
+                                text: "100kg x 5"
+                                font_size: "14sp"
+                                bold: True
+                                theme_text_color: "Custom"
+                                text_color: "EC4899"  # Różowy - PR
+
+                        MDBoxLayout:
+                            orientation: 'vertical'
+
+                            MDLabel:
+                                text: "Times Logged"
+                                font_size: "11sp"
+                                theme_text_color: "Custom"
+                                text_color: "AAAAAA"
+                                size_hint_y: None
+                                height: "20dp"
+
+                            MDLabel:
+                                text: "47"
+                                font_size: "14sp"
+                                bold: True
+                                theme_text_color: "Custom"
+                                text_color: "FFFFFF"
+
+                    # Przycisk "View Full History"
+                    MDFlatButton:
+                        text: "View Full History"
+                        theme_text_color: "Custom"
+                        text_color: "14B8A6"
+                        size_hint_y: None
+                        height: "35dp"
+
+                # === Wykres postępów (placeholder) ===
+                MDLabel:
+                    text: "Progress Chart"
+                    font_style: "H6"
+                    theme_text_color: "Custom"
+                    text_color: "FFFFFF"
+                    size_hint_y: None
+                    height: "35dp"
+
+                MDCard:
+                    orientation: 'vertical'
+                    padding: "15dp"
+                    md_bg_color: "094036"
+                    line_color: "428C7F"
+                    style: "outlined"
+                    radius: [15,]
+                    size_hint_y: None
+                    height: "200dp"
+
+                    # TODO: Wykres liniowy postępów (waga × czas)
+                    Image:
+                        source: "assets/image.png"  # Placeholder
+                        size_hint: None, None
+                        size: "250dp", "150dp"
+                        pos_hint: {"center_x": 0.5}
+
+                    MDLabel:
+                        text: "[Chart: Weight progression over time]"
+                        halign: "center"
+                        font_size: "12sp"
+                        theme_text_color: "Custom"
+                        text_color: "AAAAAA"
+
+                # === Przycisk akcji ===
+                MDRaisedButton:
+                    text: "Add to Routine"
+                    icon: "plus"
+                    size_hint_y: None
+                    height: "50dp"
+                    md_bg_color: "14B8A6"
+                    theme_text_color: "Custom"
+                    text_color: "FFFFFF"
+                    on_release: app.root.current = 'routine_builder'
+
+
+# ======================================================================
+# === ROUTINE BUILDER SCREEN - Tworzenie/Edycja rutyny ================
+# ======================================================================
+
+<RoutineBuilderScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        # === Top Bar ===
+        MDTopAppBar:
+            title: "Create Routine"
+            md_bg_color: "094036"
+            left_action_items: [["close", lambda x: setattr(app.root, 'current', 'trening')]]
+            right_action_items: [["check", lambda x: print("Save routine")]]
+
+        ScrollView:
+            MDBoxLayout:
+                orientation: 'vertical'
+                padding: "15dp"
+                spacing: "15dp"
+                size_hint_y: None
+                height: self.minimum_height
+
+                # === Nazwa rutyny ===
+                MDCard:
+                    orientation: 'vertical'
+                    padding: "15dp"
+                    md_bg_color: "094036"
+                    line_color: "428C7F"
+                    style: "outlined"
+                    radius: [15,]
+                    size_hint_y: None
+                    height: "100dp"
+
+                    MDLabel:
+                        text: "Routine Name"
+                        font_size: "12sp"
+                        theme_text_color: "Custom"
+                        text_color: "AAAAAA"
+                        size_hint_y: None
+                        height: "20dp"
+
+                    MDTextField:
+                        id: routine_name_input
+                        hint_text: "Your Routine Name"
+                        mode: "fill"
+                        font_size: "16sp"
+                        size_hint_y: None
+                        height: "50dp"
+
+                # === Sekcja ćwiczeń ===
+                MDLabel:
+                    text: "Exercises"
+                    font_style: "H6"
+                    theme_text_color: "Custom"
+                    text_color: "FFFFFF"
+                    size_hint_y: None
+                    height: "35dp"
+
+                # === Lista ćwiczeń w rutynie ===
+                # Przykładowe ćwiczenia - będą dodawane dynamicznie
+                RoutineExerciseItem:
+                    exercise_name: "Bench Press (Barbell)"
+                    target_sets: "3"
+                    target_reps: "8-10"
+                    order_number: 1
+
+                RoutineExerciseItem:
+                    exercise_name: "Incline Dumbbell Press"
+                    target_sets: "3"
+                    target_reps: "10-12"
+                    order_number: 2
+
+                RoutineExerciseItem:
+                    exercise_name: "Cable Fly"
+                    target_sets: "3"
+                    target_reps: "12-15"
+                    order_number: 3
+
+                # === Przycisk dodawania ćwiczenia ===
+                MDRaisedButton:
+                    text: "+ Add Exercise"
+                    icon: "plus"
+                    size_hint_y: None
+                    height: "50dp"
+                    md_bg_color: 0, 0, 0, 0
+                    line_color: "14B8A6"
+                    line_width: 1.5
+                    theme_text_color: "Custom"
+                    text_color: "14B8A6"
+                    on_release: app.root.current = 'exercise_library'
+
+
+                # === Przyciski akcji ===
+                MDBoxLayout:
+                    orientation: 'horizontal'
+                    spacing: "10dp"
+                    size_hint_y: None
+                    height: "55dp"
+                    padding: "0dp", "15dp"
+
+                    # Cancel
+                    MDRaisedButton:
+                        text: "Cancel"
+                        size_hint_x: 0.4
+                        md_bg_color: 0, 0, 0, 0
+                        line_color: "FF5252"
+                        line_width: 1.5
+                        theme_text_color: "Custom"
+                        text_color: "FF5252"
+                        on_release: app.root.current = 'trening'
+
+                    # Save
+                    MDRaisedButton:
+                        text: "Save Routine"
+                        icon: "content-save"
+                        size_hint_x: 0.6
+                        md_bg_color: "14B8A6"
+                        theme_text_color: "Custom"
+                        text_color: "FFFFFF"
+                        # TODO: Zapisz rutynę do backendu
+                        on_release: app.root.current = 'trening'
+
+
+# === RoutineExerciseItem Widget - ćwiczenie w builder'ze ===
+<RoutineExerciseItem>:
+    orientation: 'horizontal'
+    padding: "12dp"
+    spacing: "10dp"
+    md_bg_color: "094036"
+    line_color: "428C7F"
+    style: "outlined"
+    radius: [12,]
+    size_hint_y: None
+    height: "110dp"
+
+    # === Obrazek ćwiczenia ===
+    FitImage:
+        source: "assets/image.png"  # TODO: Dynamiczny obrazek dla każdego ćwiczenia
+        size_hint_x: 0.25
+        radius: [8, 8, 8, 8]
+        # Placeholder - będzie pokazywać miniaturkę ćwiczenia
+
+    # === Nazwa ćwiczenia i targety ===
+    MDBoxLayout:
+        orientation: 'vertical'
+        spacing: "3dp"
+        size_hint_x: 0.55
+
+        MDLabel:
+            text: root.exercise_name
+            font_size: "16sp"
+            bold: True
+            theme_text_color: "Custom"
+            text_color: "FFFFFF"
+            size_hint_y: None
+            height: "80dp"
+            valign: "top"
+
+        # Target sets x reps
+        MDBoxLayout:
+            size_hint_y: None
+            height: "38dp"
+            spacing: "8dp"
+
+            # Sets input
+            MDBoxLayout:
+                size_hint_x: 0.45
+
+                MDLabel:
+                    text: "Sets:"
+                    font_size: "13sp"
+                    theme_text_color: "Custom"
+                    text_color: "AAAAAA"
+                    size_hint_x: 0.4
+
+                TextInput:
+                    text: root.target_sets
+                    input_filter: "int"
+                    size_hint_x: 0.6
+                    size_hint_y: None
+                    height: "36dp"
+                    font_size: "16sp"
+                    halign: "center"
+                    multiline: False
+                    background_color: 0, 0, 0, 1  # Ciemne tło jak na screenie
+                    foreground_color: 1, 1, 1, 1
+                    padding: ["8dp", (self.height - self.line_height) / 2]
+
+
+            # Reps input
+            MDBoxLayout:
+                size_hint_x: 0.55
+
+                MDLabel:
+                    text: "Reps:"
+                    font_size: "13sp"
+                    theme_text_color: "Custom"
+                    text_color: "AAAAAA"
+                    size_hint_x: 0.35
+
+                TextInput:
+                    text: root.target_reps
+                    input_filter: "int"
+                    size_hint_x: 0.6
+                    size_hint_y: None
+                    height: "36dp"
+                    font_size: "16sp"
+                    halign: "center"
+                    multiline: False
+                    background_color: 0, 0, 0, 1  # Ciemne tło jak na screenie
+                    foreground_color: 1, 1, 1, 1
+                    padding: ["8dp", (self.height - self.line_height) / 2]
+
+    # === Przyciski akcji ===
+    MDBoxLayout:
+        orientation: 'vertical'
+        size_hint_x: 0.20
+        spacing: "5dp"
+
+        # Usuń ćwiczenie
+        MDIconButton:
+            icon: "delete-outline"
+            size_hint: None, None
+            size: "30dp", "30dp"
+            pos_hint: {"center_x": 0.5}
+            theme_text_color: "Custom"
+            text_color: "FF5252"
+            # TODO: Usuń z listy
+
+        # Więcej opcji
+        MDIconButton:
+            icon: "dots-vertical"
+            size_hint: None, None
+            size: "30dp", "30dp"
+            pos_hint: {"center_x": 0.5}
+            theme_text_color: "Custom"
+            text_color: "AAAAAA"
+            # TODO: Menu (superset, notes, etc.)
+
+
+ # --- Ekran Treningu ---
+
+<TreningScreen>:
+    RelativeLayout:
+
+        # Background image (Tło.png)
+        Image:
+            source: 'assets/Tło.png'
+            allow_stretch: True
+            keep_ratio: False
+            pos: self.pos
+            size: self.size
+
+        # Logo image with transparency and positioning
+        Image:
+            source: 'assets/Logo.png'
+            opacity: 0.4
+            pos_hint: {'center_x': 0.5, 'top': 1.19} # Position at top, centered horizontally
+            size_hint: (1, 0.6) # Make it 80% width and 40% height of parent
+            allow_stretch: True
+            keep_ratio: True # Maintain aspect ratio
+
+        # === Top Bar z napisem "Workout" ===
+        MDBoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: "56dp"
+            padding: "16dp", "8dp"
+            pos_hint: {"top": 1}
+
+            MDLabel:
+                text: "Workout"
+                font_size: "26sp"
+                bold: True
+                theme_text_color: "Custom"
+                text_color: "FFFFFF"
+                valign: "middle"
+                size_hint_x: 0.3
+                size_hint_y: 0.3
+
+        # Main content area and BottomNavBar
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: 0.75
+
+            MDBoxLayout:
+                orientation: 'vertical'
+                padding: "15dp"
+                spacing: "15dp"
+                size_hint_y: 1
+
+                # Wiersz "New Routine" i "Explore"
+                MDBoxLayout:
+                    size_hint_y: None
+                    height: "80dp"
+                    spacing: "10dp"
+
+                    MDRaisedButton:
+                        text: "New Routine"
+                        icon: 'plus'
+                        size_hint_x: 0.5
+                        md_bg_color: "1C4A42"
+                        theme_text_color: "Custom"
+                        text_color: "FFFFFF"
+                        on_release: app.root.current = 'routine_builder'
+
+                    MDRaisedButton:
+                        text: "Explore"
+                        icon: 'magnify'
+                        size_hint_x: 0.5
+                        md_bg_color: "1C4A42"
+                        theme_text_color: "Custom"
+                        text_color: "FFFFFF"
+                        on_release: app.root.current = 'workout_templates'
+
+                # === Sekcja "Your Routines" z przyciskiem collapse ===
+                MDBoxLayout:
+                    size_hint_y: None
+                    height: "40dp"
+                    spacing: "5dp"
+                    padding: "5dp", "0dp"
+
+                    # Przycisk z ikoną trójkąta (collapse/expand)
+                    MDIconButton:
+                        id: routines_toggle_btn
+                        icon: "chevron-down" if root.routines_expanded else "chevron-up"
+                        size_hint: None, None
+                        size: "32dp", "32dp"
+                        theme_text_color: "Custom"
+                        text_color: "14B8A6"  # Cyan z makiety
+                        on_release: root.toggle_routines_visibility()
+
+                    # Napis "YOUR ROUTINES :" (statyczny, nieklikalny)
+                    MDLabel:
+                        text: "YOUR ROUTINES :"
+                        font_style: 'Caption'
+                        theme_text_color: "Custom"
+                        text_color: "FFFFFF"
+                        size_hint_y: None
+                        height: "40dp"
+                        valign: "center"
+
+
+
+                # Lista treningów (ScrollView - obszar zaznaczony na czerwono)
+                # Kontrola widoczności przez przycisk chevron
+                # STAŁA wysokość 500dp - zmienia się tylko opacity, NIE height
+                ScrollView:
+                    id: routines_scroll  # ID do referencji w logice toggle
+                    size_hint_y: None
+                    height: 350  # ZAWSZE 500dp - nie zmienia się!
+                    opacity: 1 if root.routines_expanded else 0
+                    disabled: not root.routines_expanded
+
+                    MDList:
+                        id: training_list
+                        spacing: "10dp"
+
+                        WorkoutCard:
+                            title: "Pull B"
+
+                        WorkoutCard:
+                            title: "Push B"
+
+                        WorkoutCard:
+                            title: "Pull A"
+
+            BottomNavBar:
+                NavButton:
+                    text: 'Home'
+                    icon_source: 'assets/Home.png'
+                    screen_name: 'menu_glowne'
+                NavButton:
+                    text: 'Workout'
+                    icon_source: 'assets/Workout.png'
+                    screen_name: 'trening'
+                NavButton:
+                    text: 'Profile'
+                    icon_source: 'assets/image.png' # You need to create or find this icon
+                    screen_name: 'profile'
+
+
+# === WIDGET DEFINITIONS (PRIORITY 3) ===
+
+<StatCard>:
+    orientation: 'vertical'
+    padding: "15dp"
+    md_bg_color: "094036"
+    line_color: root.accent_color
+    line_width: 2
+    style: "outlined"
+    radius: [15,]
+    MDIcon:
+        icon: root.icon_name
+        icon_size: "35sp"
+        theme_text_color: "Custom"
+        text_color: root.accent_color
+        pos_hint: {"center_x": 0.5}
+    MDLabel:
+        text: root.stat_value
+        font_style: "H5"
+        halign: "center"
+        theme_text_color: "Custom"
+        text_color: "FFFFFF"
+    MDLabel:
+        text: root.stat_name
+        font_size: "11sp"
+        halign: "center"
+        theme_text_color: "Custom"
+        text_color: "AAAAAA"
+
+<PersonalRecordCard>:
+    orientation: 'horizontal'
+    padding: "12dp"
+    md_bg_color: "094036"
+    line_color: "428C7F"
+    style: "outlined"
+    radius: [12,]
+    size_hint_y: None
+    height: "60dp"
+    MDIcon:
+        icon: "trophy"
+        size_hint: None, None
+        size: "30dp", "30dp"
+        theme_text_color: "Custom"
+        text_color: "EC4899"
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDLabel:
+            text: root.exercise_name
+            bold: True
+            theme_text_color: "Custom"
+            text_color: "FFFFFF"
+        MDLabel:
+            text: root.date_achieved
+            font_size: "10sp"
+            theme_text_color: "Custom"
+            text_color: "AAAAAA"
+    MDLabel:
+        text: root.pr_value
+        halign: "right"
+        theme_text_color: "Custom"
+        text_color: "EC4899"
+
+<BodyMeasurementItem>:
+    orientation: 'vertical'
+    padding: "12dp"
+    md_bg_color: "094036"
+    line_color: "428C7F"
+    style: "outlined"
+    radius: [12,]
+    MDLabel:
+        text: root.measurement_name
+        font_size: "11sp"
+        theme_text_color: "Custom"
+        text_color: "AAAAAA"
+    MDLabel:
+        text: root.current_value
+        font_style: "H6"
+        theme_text_color: "Custom"
+        text_color: "FFFFFF"
+    MDLabel:
+        text: root.change_value
+        font_size: "12sp"
+        theme_text_color: "Custom"
+        text_color: "14B8A6" if root.is_positive_change else "FF5252"
+
+
+# ======================================================================
+# === EXERCISE ANALYTICS SCREEN - Analiza postępów ćwiczenia ==========
+# ======================================================================
+# Pokazuje szczegółowe wykresy i statystyki dla pojedynczego ćwiczenia
+
+<ExerciseAnalyticsScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        # === Top Bar ===
+        MDTopAppBar:
+            title: "Exercise Analytics"
+            md_bg_color: "094036"
+            left_action_items: [["chevron-left", lambda x: setattr(app.root, 'current', 'exercise_detail')]]
+            right_action_items: [["share-variant", lambda x: print("Share")]]
+
+        ScrollView:
+            MDBoxLayout:
+                orientation: 'vertical'
+                padding: "15dp"
+                spacing: "15dp"
+                size_hint_y: None
+                height: self.minimum_height
+
+                # === Header - Nazwa ćwiczenia ===
+                MDLabel:
+                    text: "BENCH PRESS (BARBELL)"
+                    font_style: "H5"
+                    bold: True
+                    theme_text_color: "Custom"
+                    text_color: "FFFFFF"
+                    size_hint_y: None
+                    height: self.texture_size[1]
+
+                # === Period selector ===
+                MDBoxLayout:
+                    size_hint_y: None
+                    height: "45dp"
+                    spacing: "8dp"
+
+                    MDChip:
+                        text: "1M"
+                        md_bg_color: "1C4A42"
+                        size_hint_x: 0.2
+                    MDChip:
+                        text: "3M"
+                        md_bg_color: "14B8A6"  # Selected
+                        size_hint_x: 0.2
+                    MDChip:
+                        text: "6M"
+                        md_bg_color: "1C4A42"
+                        size_hint_x: 0.2
+                    MDChip:
+                        text: "1Y"
+                        md_bg_color: "1C4A42"
+                        size_hint_x: 0.2
+                    MDChip:
+                        text: "All"
+                        md_bg_color: "1C4A42"
+                        size_hint_x: 0.2
+
+                # === Wykres wagi × czas ===
+                MDLabel:
+                    text: "Weight Progression"
+                    font_style: "H6"
+                    theme_text_color: "Custom"
+                    text_color: "FFFFFF"
+                    size_hint_y: None
+                    height: "35dp"
+
+                MDCard:
+                    orientation: 'vertical'
+                    padding: "15dp"
+                    md_bg_color: "094036"
+                    line_color: "428C7F"
+                    style: "outlined"
+                    radius: [15,]
+                    size_hint_y: None
+                    height: "250dp"
+
+                    Image:
+                        source: "assets/image.png"  # TODO: Line chart
+                        size_hint: None, None
+                        size: "300dp", "180dp"
+                        pos_hint: {"center_x": 0.5}
+
+                    MDLabel:
+                        text: "[Line Chart: Weight over time]"
+                        halign: "center"
+                        font_size: "11sp"
+                        theme_text_color: "Custom"
+                        text_color: "AAAAAA"
+
+                # === Wykres volume × czas ===
+                MDLabel:
+                    text: "Volume Progression"
+                    font_style: "H6"
+                    theme_text_color: "Custom"
+                    text_color: "FFFFFF"
+                    size_hint_y: None
+                    height: "35dp"
+
+                MDCard:
+                    orientation: 'vertical'
+                    padding: "15dp"
+                    md_bg_color: "094036"
+                    line_color: "428C7F"
+                    style: "outlined"
+                    radius: [15,]
+                    size_hint_y: None
+                    height: "250dp"
+
+                    Image:
+                        source: "assets/image.png"  # TODO: Bar chart
+                        size_hint: None, None
+                        size: "300dp", "180dp"
+                        pos_hint: {"center_x": 0.5}
+
+                    MDLabel:
+                        text: "[Bar Chart: Total volume per session]"
+                        halign: "center"
+                        font_size: "11sp"
+                        theme_text_color: "Custom"
+                        text_color: "AAAAAA"
+
+                # === Personal Records ===
+                MDLabel:
+                    text: "Personal Records"
+                    font_style: "H6"
+                    theme_text_color: "Custom"
+                    text_color: "FFFFFF"
+                    size_hint_y: None
+                    height: "35dp"
+
+                MDGridLayout:
+                    cols: 3
+                    spacing: "10dp"
+                    size_hint_y: None
+                    height: "100dp"
+
+                    # 1RM
+                    MDCard:
+                        orientation: 'vertical'
+                        padding: "12dp"
+                        md_bg_color: "094036"
+                        line_color: "EC4899"
+                        line_width: 2
+                        style: "outlined"
+                        radius: [12,]
+                        MDLabel:
+                            text: "1RM"
+                            font_size: "11sp"
+                            halign: "center"
+                            theme_text_color: "Custom"
+                            text_color: "AAAAAA"
+                        MDLabel:
+                            text: "120kg"
+                            font_style: "H6"
+                            halign: "center"
+                            theme_text_color: "Custom"
+                            text_color: "EC4899"
+
+                    # 5RM
+                    MDCard:
+                        orientation: 'vertical'
+                        padding: "12dp"
+                        md_bg_color: "094036"
+                        line_color: "EC4899"
+                        line_width: 2
+                        style: "outlined"
+                        radius: [12,]
+                        MDLabel:
+                            text: "5RM"
+                            font_size: "11sp"
+                            halign: "center"
+                            theme_text_color: "Custom"
+                            text_color: "AAAAAA"
+                        MDLabel:
+                            text: "100kg"
+                            font_style: "H6"
+                            halign: "center"
+                            theme_text_color: "Custom"
+                            text_color: "EC4899"
+
+                    # 10RM
+                    MDCard:
+                        orientation: 'vertical'
+                        padding: "12dp"
+                        md_bg_color: "094036"
+                        line_color: "EC4899"
+                        line_width: 2
+                        style: "outlined"
+                        radius: [12,]
+                        MDLabel:
+                            text: "10RM"
+                            font_size: "11sp"
+                            halign: "center"
+                            theme_text_color: "Custom"
+                            text_color: "AAAAAA"
+                        MDLabel:
+                            text: "85kg"
+                            font_style: "H6"
+                            halign: "center"
+                            theme_text_color: "Custom"
+                            text_color: "EC4899"
+
+                # === Statistics Summary ===
+                MDLabel:
+                    text: "Statistics"
+                    font_style: "H6"
+                    theme_text_color: "Custom"
+                    text_color: "FFFFFF"
+                    size_hint_y: None
+                    height: "35dp"
+
+                MDCard:
+                    orientation: 'vertical'
+                    padding: "15dp"
+                    spacing: "10dp"
+                    md_bg_color: "094036"
+                    line_color: "428C7F"
+                    style: "outlined"
+                    radius: [15,]
+                    size_hint_y: None
+                    height: "180dp"
+
+                    MDBoxLayout:
+                        MDLabel:
+                            text: "Average Weight:"
+                            theme_text_color: "Custom"
+                            text_color: "AAAAAA"
+                            size_hint_x: 0.6
+                        MDLabel:
+                            text: "92.5 kg"
+                            halign: "right"
+                            theme_text_color: "Custom"
+                            text_color: "FFFFFF"
+
+                    MDBoxLayout:
+                        MDLabel:
+                            text: "Average Reps:"
+                            theme_text_color: "Custom"
+                            text_color: "AAAAAA"
+                            size_hint_x: 0.6
+                        MDLabel:
+                            text: "7.2"
+                            halign: "right"
+                            theme_text_color: "Custom"
+                            text_color: "FFFFFF"
+
+                    MDBoxLayout:
+                        MDLabel:
+                            text: "Total Sets:"
+                            theme_text_color: "Custom"
+                            text_color: "AAAAAA"
+                            size_hint_x: 0.6
+                        MDLabel:
+                            text: "247"
+                            halign: "right"
+                            theme_text_color: "Custom"
+                            text_color: "FFFFFF"
+
+                    MDBoxLayout:
+                        MDLabel:
+                            text: "Total Volume:"
+                            theme_text_color: "Custom"
+                            text_color: "AAAAAA"
+                            size_hint_x: 0.6
+                        MDLabel:
+                            text: "164,850 kg"
+                            halign: "right"
+                            theme_text_color: "Custom"
+                            text_color: "14B8A6"
+
+
+# ======================================================================
+# === BODY MEASUREMENTS SCREEN - Pomiary ciała =========================
+# ======================================================================
+
+<BodyMeasurementsScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        # === Top Bar ===
+        MDTopAppBar:
+            title: "Body Measurements"
+            md_bg_color: "094036"
+            left_action_items: [["chevron-left", lambda x: setattr(app.root, 'current', 'profile')]]
+            right_action_items: [["plus", lambda x: print("Add measurement")]]
+
+        ScrollView:
+            MDBoxLayout:
+                orientation: 'vertical'
+                padding: "15dp"
+                spacing: "15dp"
+                size_hint_y: None
+                height: self.minimum_height
+
+                # === Weight ===
+                MDCard:
+                    orientation: 'vertical'
+                    padding: "15dp"
+                    spacing: "10dp"
+                    md_bg_color: "094036"
+                    line_color: "428C7F"
+                    style: "outlined"
+                    radius: [15,]
+                    size_hint_y: None
+                    height: "200dp"
+
+                    MDBoxLayout:
+                        size_hint_y: None
+                        height: "40dp"
+                        MDLabel:
+                            text: "Weight"
+                            font_style: "H6"
+                            theme_text_color: "Custom"
+                            text_color: "FFFFFF"
+                            size_hint_x: 0.5
+                        MDLabel:
+                            text: "75.5 kg"
+                            font_style: "H6"
+                            halign: "right"
+                            theme_text_color: "Custom"
+                            text_color: "14B8A6"
+
+                    MDLabel:
+                        text: "-2.3 kg (last 30 days)"
+                        font_size: "12sp"
+                        theme_text_color: "Custom"
+                        text_color: "14B8A6"
+                        size_hint_y: None
+                        height: "20dp"
+
+                    # Wykres placeholder
+                    Image:
+                        source: "assets/image.png"
+                        size_hint: None, None
+                        size: "280dp", "100dp"
+                        pos_hint: {"center_x": 0.5}
+
+                # === Body Fat % ===
+                MDCard:
+                    orientation: 'vertical'
+                    padding: "15dp"
+                    spacing: "10dp"
+                    md_bg_color: "094036"
+                    line_color: "428C7F"
+                    style: "outlined"
+                    radius: [15,]
+                    size_hint_y: None
+                    height: "200dp"
+
+                    MDBoxLayout:
+                        size_hint_y: None
+                        height: "40dp"
+                        MDLabel:
+                            text: "Body Fat %"
+                            font_style: "H6"
+                            theme_text_color: "Custom"
+                            text_color: "FFFFFF"
+                            size_hint_x: 0.5
+                        MDLabel:
+                            text: "14.2%"
+                            font_style: "H6"
+                            halign: "right"
+                            theme_text_color: "Custom"
+                            text_color: "14B8A6"
+
+                    MDLabel:
+                        text: "-1.8% (last 30 days)"
+                        font_size: "12sp"
+                        theme_text_color: "Custom"
+                        text_color: "14B8A6"
+                        size_hint_y: None
+                        height: "20dp"
+
+                    Image:
+                        source: "assets/image.png"
+                        size_hint: None, None
+                        size: "280dp", "100dp"
+                        pos_hint: {"center_x": 0.5}
+
+                # === Więcej pomiarów ===
+                MDLabel:
+                    text: "Other Measurements"
+                    font_style: "H6"
+                    theme_text_color: "Custom"
+                    text_color: "FFFFFF"
+                    size_hint_y: None
+                    height: "35dp"
+
+                MDGridLayout:
+                    cols: 2
+                    spacing: "10dp"
+                    size_hint_y: None
+                    height: "280dp"
+
+                    BodyMeasurementItem:
+                        measurement_name: "Chest"
+                        current_value: "102 cm"
+                        change_value: "+1.5 cm"
+                        is_positive_change: True
+
+                    BodyMeasurementItem:
+                        measurement_name: "Waist"
+                        current_value: "82 cm"
+                        change_value: "-3.2 cm"
+                        is_positive_change: True
+
+                    BodyMeasurementItem:
+                        measurement_name: "Arms"
+                        current_value: "38 cm"
+                        change_value: "+0.8 cm"
+                        is_positive_change: True
+
+                    BodyMeasurementItem:
+                        measurement_name: "Thighs"
+                        current_value: "58 cm"
+                        change_value: "+1.2 cm"
+                        is_positive_change: True
+
+
+# ======================================================================
+# === PROGRESS PHOTOS SCREEN - Galeria zdjęć postępów =================
+# ======================================================================
+
+<ProgressPhotosScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        # === Top Bar ===
+        MDTopAppBar:
+            title: "Progress Photos"
+            md_bg_color: "094036"
+            left_action_items: [["chevron-left", lambda x: setattr(app.root, 'current', 'profile')]]
+            right_action_items: [["camera-plus", lambda x: print("Add photo")]]
+
+        ScrollView:
+            MDBoxLayout:
+                orientation: 'vertical'
+                padding: "15dp"
+                spacing: "15dp"
+                size_hint_y: None
+                height: self.minimum_height
+
+                # === Compare Button ===
+                MDRaisedButton:
+                    text: "Compare Progress"
+                    icon: "compare"
+                    size_hint_y: None
+                    height: "50dp"
+                    md_bg_color: "14B8A6"
+                    theme_text_color: "Custom"
+                    text_color: "FFFFFF"
+
+                # === Timeline ===
+                MDLabel:
+                    text: "DECEMBER 2025"
+                    font_size: "12sp"
+                    bold: True
+                    theme_text_color: "Custom"
+                    text_color: "AAAAAA"
+                    size_hint_y: None
+                    height: "30dp"
+
+                # Grid zdjęć
+                MDGridLayout:
+                    cols: 3
+                    spacing: "10dp"
+                    size_hint_y: None
+                    height: "360dp"
+
+                    # Placeholders (9 zdjęć)
+                    MDCard:
+                        radius: [12,]
+                        md_bg_color: "1C4A42"
+                        MDBoxLayout:
+                            orientation: 'vertical'
+                            MDIcon:
+                                icon: "camera"
+                                pos_hint: {"center_x": 0.5}
+                                icon_size: "40sp"
+                                theme_text_color: "Custom"
+                                text_color: "AAAAAA"
+                            MDLabel:
+                                text: "Dec 27"
+                                font_size: "10sp"
+                                halign: "center"
+                                theme_text_color: "Custom"
+                                text_color: "AAAAAA"
+
+                    MDCard:
+                        radius: [12,]
+                        md_bg_color: "1C4A42"
+                        MDIcon:
+                            icon: "camera"
+                            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                            icon_size: "40sp"
+                            theme_text_color: "Custom"
+                            text_color: "AAAAAA"
+
+                    MDCard:
+                        radius: [12,]
+                        md_bg_color: "1C4A42"
+                        MDIcon:
+                            icon: "camera"
+                            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                            icon_size: "40sp"
+                            theme_text_color: "Custom"
+                            text_color: "AAAAAA"
+
+                    MDCard:
+                        radius: [12,]
+                        md_bg_color: "1C4A42"
+                        MDIcon:
+                            icon: "camera"
+                            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                            icon_size: "40sp"
+                            theme_text_color: "Custom"
+                            text_color: "AAAAAA"
+
+                    MDCard:
+                        radius: [12,]
+                        md_bg_color: "1C4A42"
+                        MDIcon:
+                            icon: "camera"
+                            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                            icon_size: "40sp"
+                            theme_text_color: "Custom"
+                            text_color: "AAAAAA"
+
+                    MDCard:
+                        radius: [12,]
+                        md_bg_color: "1C4A42"
+                        MDIcon:
+                            icon: "camera"
+                            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                            icon_size: "40sp"
+                            theme_text_color: "Custom"
+                            text_color: "AAAAAA"
+
+                    MDCard:
+                        radius: [12,]
+                        md_bg_color: "1C4A42"
+                        MDIcon:
+                            icon: "camera"
+                            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                            icon_size: "40sp"
+                            theme_text_color: "Custom"
+                            text_color: "AAAAAA"
+
+                    MDCard:
+                        radius: [12,]
+                        md_bg_color: "1C4A42"
+                        MDIcon:
+                            icon: "camera"
+                            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                            icon_size: "40sp"
+                            theme_text_color: "Custom"
+                            text_color: "AAAAAA"
+
+                    MDCard:
+                        radius: [12,]
+                        md_bg_color: "1C4A42"
+                        MDIcon:
+                            icon: "camera"
+                            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                            icon_size: "40sp"
+                            theme_text_color: "Custom"
+                            text_color: "AAAAAA"
+
+                # Starsze miesiące
+                MDLabel:
+                    text: "NOVEMBER 2025"
+                    font_size: "12sp"
+                    bold: True
+                    theme_text_color: "Custom"
+                    text_color: "AAAAAA"
+                    size_hint_y: None
+                    height: "30dp"
+
+                MDLabel:
+                    text: "+ 12 more photos"
+                    halign: "center"
+                    font_size: "13sp"
+                    theme_text_color: "Custom"
+                    text_color: "14B8A6"
+                    size_hint_y: None
+                    height: "40dp"
+
+
+# ======================================================================
+# === SETTINGS SCREEN - Ustawienia aplikacji ===========================
+# ======================================================================
+
+<SettingsScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        # === Top Bar ===
+        MDTopAppBar:
+            title: "Settings"
+            md_bg_color: "094036"
+            left_action_items: [["chevron-left", lambda x: setattr(app.root, 'current', 'profile')]]
+
+        ScrollView:
+            MDBoxLayout:
+                orientation: 'vertical'
+                padding: "15dp"
+                spacing: "15dp"
+                size_hint_y: None
+                height: self.minimum_height
+
+                # === Account ===
+                MDLabel:
+                    text: "Account"
+                    font_style: "H6"
+                    theme_text_color: "Custom"
+                    text_color: "FFFFFF"
+                    size_hint_y: None
+                    height: "35dp"
+
+                MDCard:
+                    orientation: 'vertical'
+                    padding: "0dp"
+                    md_bg_color: "094036"
+                    line_color: "428C7F"
+                    style: "outlined"
+                    radius: [15,]
+                    size_hint_y: None
+                    height: "120dp"
+
+                    MDBoxLayout:
+                        size_hint_y: None
+                        height: "60dp"
+                        padding: "15dp"
+                        MDLabel:
+                            text: "Profile"
+                        MDIconButton:
+                            icon: "chevron-right"
+
+                    MDBoxLayout:
+                        size_hint_y: None
+                        height: "60dp"
+                        padding: "15dp"
+                        MDLabel:
+                            text: "Change Password"
+                        MDIconButton:
+                            icon: "chevron-right"
+
+                # === Preferences ===
+                MDLabel:
+                    text: "Preferences"
+                    font_style: "H6"
+                    theme_text_color: "Custom"
+                    text_color: "FFFFFF"
+                    size_hint_y: None
+                    height: "35dp"
+
+                MDCard:
+                    orientation: 'vertical'
+                    padding: "0dp"
+                    md_bg_color: "094036"
+                    line_color: "428C7F"
+                    style: "outlined"
+                    radius: [15,]
+                    size_hint_y: None
+                    height: "240dp"
+
+                    # Units
+                    MDBoxLayout:
+                        size_hint_y: None
+                        height: "60dp"
+                        padding: "15dp"
+                        MDLabel:
+                            text: "Units"
+                            size_hint_x: 0.5
+                        MDLabel:
+                            text: "kg / cm"
+                            halign: "right"
+                            theme_text_color: "Custom"
+                            text_color: "14B8A6"
+
+                    # Theme
+                    MDBoxLayout:
+                        size_hint_y: None
+                        height: "60dp"
+                        padding: "15dp"
+                        MDLabel:
+                            text: "Theme"
+                            size_hint_x: 0.5
+                        MDLabel:
+                            text: "Dark"
+                            halign: "right"
+                            theme_text_color: "Custom"
+                            text_color: "14B8A6"
+
+                    # Default Rest Timer
+                    MDBoxLayout:
+                        size_hint_y: None
+                        height: "60dp"
+                        padding: "15dp"
+                        MDLabel:
+                            text: "Default Rest Timer"
+                            size_hint_x: 0.6
+                        MDLabel:
+                            text: "90s"
+                            halign: "right"
+                            theme_text_color: "Custom"
+                            text_color: "14B8A6"
+
+                    # Notifications
+                    MDBoxLayout:
+                        size_hint_y: None
+                        height: "60dp"
+                        padding: "15dp"
+                        MDLabel:
+                            text: "Notifications"
+                            size_hint_x: 0.7
+                        MDSwitch:
+                            active: True
+
+                # === Data ===
+                MDLabel:
+                    text: "Data"
+                    font_style: "H6"
+                    theme_text_color: "Custom"
+                    text_color: "FFFFFF"
+                    size_hint_y: None
+                    height: "35dp"
+
+                MDCard:
+                    orientation: 'vertical'
+                    padding: "0dp"
+                    md_bg_color: "094036"
+                    line_color: "428C7F"
+                    style: "outlined"
+                    radius: [15,]
+                    size_hint_y: None
+                    height: "120dp"
+
+                    MDBoxLayout:
+                        size_hint_y: None
+                        height: "60dp"
+                        padding: "15dp"
+                        MDLabel:
+                            text: "Export Data"
+                        MDIconButton:
+                            icon: "download"
+                            theme_text_color: "Custom"
+                            text_color: "14B8A6"
+
+                    MDBoxLayout:
+                        size_hint_y: None
+                        height: "60dp"
+                        padding: "15dp"
+                        MDLabel:
+                            text: "Import Data"
+                        MDIconButton:
+                            icon: "upload"
+                            theme_text_color: "Custom"
+                            text_color: "14B8A6"
+
+                # === About ===
+                MDLabel:
+                    text: "About"
+                    font_style: "H6"
+                    theme_text_color: "Custom"
+                    text_color: "FFFFFF"
+                    size_hint_y: None
+                    height: "35dp"
+
+                MDCard:
+                    orientation: 'vertical'
+                    padding: "15dp"
+                    md_bg_color: "094036"
+                    line_color: "428C7F"
+                    style: "outlined"
+                    radius: [15,]
+                    size_hint_y: None
+                    height: "100dp"
+
+                    MDLabel:
+                        text: "PowerGym v1.0"
+                        halign: "center"
+                        theme_text_color: "Custom"
+                        text_color: "FFFFFF"
+
+                    MDLabel:
+                        text: "Workout tracking made simple"
+                        halign: "center"
+                        font_size: "12sp"
+                        theme_text_color: "Custom"
+                        text_color: "AAAAAA"
+
+                # === Logout Button ===
+                MDRaisedButton:
+                    text: "Logout"
+                    size_hint_y: None
+                    height: "50dp"
+                    md_bg_color: 0, 0, 0, 0
+                    line_color: "FF5252"
+                    line_width: 1.5
+                    theme_text_color: "Custom"
+                    text_color: "FF5252"
+                    on_release: app.root.current = 'logowanie'
+
+
+# ======================================================================
+# === WORKOUT TEMPLATES SCREEN - Gotowe plany treningowe =============
+# ======================================================================
+# Ekran pokazujący predefiniowane plany treningowe z przypisanymi ćwiczeniami
+# Wzorowany na mockup PowerGym
+
+<WorkoutTemplatesScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        # Background z logo (opacity 0.3)
+        canvas.before:
+            Color:
+                rgba: 0.035, 0.251, 0.212, 1  # #094036
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+            # Logo jako tło z przezroczystością
+            Color:
+                rgba: 1, 1, 1, 0.15  # Opacity 0.15 dla subtelności
+            Rectangle:
+                source: 'assets/Logo.png'
+                pos: self.center_x - 100, self.center_y - 100
+                size: 200, 200
+
+        # === Top Bar ===
+        MDTopAppBar:
+            title: "WORKOUT PLANS"
+            md_bg_color: 0, 0, 0, 0  # Przezroczyste
+            left_action_items: [["chevron-left", lambda x: setattr(app.root, 'current', 'trening')]]
+            right_action_items: [["plus", lambda x: setattr(app.root, 'current', 'routine_builder')]]
+
+        # === Scrollable Content ===
+        ScrollView:
+            MDBoxLayout:
+                orientation: 'vertical'
+                padding: "15dp"
+                spacing: "15dp"
+                size_hint_y: None
+                height: self.minimum_height
+
+                # === Opis sekcji ===
+                MDLabel:
+                    text: "Choose a ready-made workout plan"
+                    font_style: "Caption"
+                    theme_text_color: "Custom"
+                    text_color: "AAAAAA"
+                    size_hint_y: None
+                    height: "30dp"
+
+                # === Grid planów (2 kolumny) ===
+                MDGridLayout:
+                    cols: 2
+                    spacing: "15dp"
+                    size_hint_y: None
+                    height: self.minimum_height
+                    adaptive_height: True
+
+                    # === PLAN 1: 3X/WEEK FULL BODY ===
+                    MDCard:
+                        orientation: 'vertical'
+                        padding: "15dp"
+                        md_bg_color: "1A1A3E"  # Ciemny fiolet z makiety
+                        radius: [15,]
+                        size_hint_y: None
+                        height: "200dp"
+                        on_release: print("Selected: 3X/WEEK FULL BODY")
+
+                        # Placeholder na obrazek
+                        BoxLayout:
+                            orientation: 'vertical'
+                            size_hint_y: 0.6
+
+                            # TODO: z backendu - obrazek planu (np. ikona sztangi w kole)
+                            Image:
+                                source: "assets/image.png"
+                                size_hint: None, None
+                                size: "80dp", "80dp"
+                                pos_hint: {'center_x': 0.5}
+
+                        # Tytuł planu
+                        MDLabel:
+                            text: "3X/WEEK"
+                            font_style: "H6"
+                            halign: "center"
+                            theme_text_color: "Custom"
+                            text_color: "FFFFFF"
+                            size_hint_y: None
+                            height: "30dp"
+
+                        MDLabel:
+                            text: "FULL BODY"
+                            font_size: "13sp"
+                            halign: "center"
+                            theme_text_color: "Custom"
+                            text_color: "AAAAAA"
+                            size_hint_y: None
+                            height: "25dp"
+
+                    # === PLAN 2: PUSH ===
+                    MDCard:
+                        orientation: 'vertical'
+                        padding: "15dp"
+                        md_bg_color: "1A1A3E"
+                        radius: [15,]
+                        size_hint_y: None
+                        height: "200dp"
+                        on_release: print("Selected: PUSH")
+
+                        BoxLayout:
+                            orientation: 'vertical'
+                            size_hint_y: 0.6
+
+                            # TODO: z backendu - obrazek planu (diagram mięśni - push)
+                            Image:
+                                source: "assets/image.png"
+                                size_hint: None, None
+                                size: "80dp", "80dp"
+                                pos_hint: {'center_x': 0.5}
+
+                        MDLabel:
+                            text: "PUSH"
+                            font_style: "H6"
+                            halign: "center"
+                            theme_text_color: "Custom"
+                            text_color: "FFFFFF"
+                            size_hint_y: None
+                            height: "30dp"
+
+                        MDLabel:
+                            text: "Chest, Shoulders, Triceps"
+                            font_size: "11sp"
+                            halign: "center"
+                            theme_text_color: "Custom"
+                            text_color: "AAAAAA"
+                            size_hint_y: None
+                            height: "25dp"
+
+                    # === PLAN 3: PULL ===
+                    MDCard:
+                        orientation: 'vertical'
+                        padding: "15dp"
+                        md_bg_color: "1A1A3E"
+                        radius: [15,]
+                        size_hint_y: None
+                        height: "200dp"
+                        on_release: print("Selected: PULL")
+
+                        BoxLayout:
+                            orientation: 'vertical'
+                            size_hint_y: 0.6
+
+                            # TODO: z backendu - obrazek planu (diagram mięśni - pull)
+                            Image:
+                                source: "assets/image.png"
+                                size_hint: None, None
+                                size: "80dp", "80dp"
+                                pos_hint: {'center_x': 0.5}
+
+                        MDLabel:
+                            text: "PULL"
+                            font_style: "H6"
+                            halign: "center"
+                            theme_text_color: "Custom"
+                            text_color: "FFFFFF"
+                            size_hint_y: None
+                            height: "30dp"
+
+                        MDLabel:
+                            text: "Back, Biceps, Rear Delts"
+                            font_size: "11sp"
+                            halign: "center"
+                            theme_text_color: "Custom"
+                            text_color: "AAAAAA"
+                            size_hint_y: None
+                            height: "25dp"
+
+                    # === PLAN 4: 4X/WEEK UPPER/LOWER ===
+                    MDCard:
+                        orientation: 'vertical'
+                        padding: "15dp"
+                        md_bg_color: "1A1A3E"
+                        radius: [15,]
+                        size_hint_y: None
+                        height: "200dp"
+                        on_release: print("Selected: 4X/WEEK UPPER/LOWER")
+
+                        BoxLayout:
+                            orientation: 'vertical'
+                            size_hint_y: 0.6
+
+                            # TODO: z backendu - obrazek planu (ikona sztangi - zielona)
+                            Image:
+                                source: "assets/image.png"
+                                size_hint: None, None
+                                size: "80dp", "80dp"
+                                pos_hint: {'center_x': 0.5}
+
+                        MDLabel:
+                            text: "4X/WEEK"
+                            font_style: "H6"
+                            halign: "center"
+                            theme_text_color: "Custom"
+                            text_color: "FFFFFF"
+                            size_hint_y: None
+                            height: "30dp"
+
+                        MDLabel:
+                            text: "UPPER/LOWER"
+                            font_size: "13sp"
+                            halign: "center"
+                            theme_text_color: "Custom"
+                            text_color: "AAAAAA"
+                            size_hint_y: None
+                            height: "25dp"
+
+                    # === PLAN 5: 5X/WEEK PUSH/PULL/LEGS ===
+                    MDCard:
+                        orientation: 'vertical'
+                        padding: "15dp"
+                        md_bg_color: "1A1A3E"
+                        radius: [15,]
+                        size_hint_y: None
+                        height: "200dp"
+                        on_release: print("Selected: 5X/WEEK PPL")
+
+                        BoxLayout:
+                            orientation: 'vertical'
+                            size_hint_y: 0.6
+
+                            # TODO: z backendu - obrazek planu (ikona sztangi - pomarańczowa)
+                            Image:
+                                source: "assets/image.png"
+                                size_hint: None, None
+                                size: "80dp", "80dp"
+                                pos_hint: {'center_x': 0.5}
+
+                        MDLabel:
+                            text: "5X/WEEK"
+                            font_style: "H6"
+                            halign: "center"
+                            theme_text_color: "Custom"
+                            text_color: "FFFFFF"
+                            size_hint_y: None
+                            height: "30dp"
+
+                        MDLabel:
+                            text: "PUSH/PULL/LEGS"
+                            font_size: "11sp"
+                            halign: "center"
+                            theme_text_color: "Custom"
+                            text_color: "AAAAAA"
+                            size_hint_y: None
+                            height: "25dp"
+
+                    # === PLAN 6: LEGS (dopełnienie siatki) ===
+                    MDCard:
+                        orientation: 'vertical'
+                        padding: "15dp"
+                        md_bg_color: "1A1A3E"
+                        radius: [15,]
+                        size_hint_y: None
+                        height: "200dp"
+                        on_release: print("Selected: LEGS")
+
+                        BoxLayout:
+                            orientation: 'vertical'
+                            size_hint_y: 0.6
+
+                            # TODO: z backendu - obrazek planu (diagram mięśni - nogi)
+                            Image:
+                                source: "assets/image.png"
+                                size_hint: None, None
+                                size: "80dp", "80dp"
+                                pos_hint: {'center_x': 0.5}
+
+                        MDLabel:
+                            text: "LEGS"
+                            font_style: "H6"
+                            halign: "center"
+                            theme_text_color: "Custom"
+                            text_color: "FFFFFF"
+                            size_hint_y: None
+                            height: "30dp"
+
+                        MDLabel:
+                            text: "Quads, Hamstrings, Calves"
+                            font_size: "11sp"
+                            halign: "center"
+                            theme_text_color: "Custom"
+                            text_color: "AAAAAA"
+                            size_hint_y: None
+                            height: "25dp"
+
+                # === Dodatkowa informacja ===
+                MDLabel:
+                    text: "All plans include pre-selected exercises"
+                    font_size: "12sp"
+                    halign: "center"
+                    theme_text_color: "Custom"
+                    text_color: "14B8A6"
+                    size_hint_y: None
+                    height: "40dp"
+
+        # === Bottom Nav Bar ===
+        BottomNavBar:
+            NavButton:
+                text: 'Home'
+                icon_source: 'assets/Home.png'
+                screen_name: 'menu_glowne'
+            NavButton:
+                text: 'Workout'
+                icon_source: 'assets/Workout.png'
+                screen_name: 'trening'
+            NavButton:
+                text: 'Profile'
+                icon_source: 'assets/image.png'
+                screen_name: 'profile'
+
+# === CompletedWorkoutCard - Karta zakończonego treningu w stylu Hevy ===
+<CompletedWorkoutCard>:
+    orientation: 'vertical'
+    padding: "20dp"
+    spacing: "12dp"
+    md_bg_color: "094036"
+    line_color: "428C7F"
+    style: "outlined"
+    radius: [15,]
+    size_hint_y: None
+    height: "400dp"
+    ripple_behavior: True
+
+    # === Nazwa treningu (duży tytuł) ===
+    MDLabel:
+        text: root.workout_name
+        font_size: "28sp"
+        bold: True
+        theme_text_color: "Custom"
+        text_color: "FFFFFF"
+        size_hint_y: None
+        height: "40dp"
+
+    # === Stats: Time i Volume obok siebie ===
+    MDBoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: None
+        height: "70dp"
+        spacing: "20dp"
+
+        # Time
+        MDBoxLayout:
+            orientation: 'vertical'
+            size_hint_x: 0.5
+
+            MDLabel:
+                text: "Time"
+                font_size: "14sp"
+                theme_text_color: "Custom"
+                text_color: "AAAAAA"
+                size_hint_y: None
+                height: "20dp"
+
+            MDLabel:
+                text: root.workout_time
+                font_size: "22sp"
+                bold: True
+                theme_text_color: "Custom"
+                text_color: "FFFFFF"
+                size_hint_y: None
+                height: "35dp"
+
+        # Volume
+        MDBoxLayout:
+            orientation: 'vertical'
+            size_hint_x: 0.5
+
+            MDLabel:
+                text: "Volume"
+                font_size: "14sp"
+                theme_text_color: "Custom"
+                text_color: "AAAAAA"
+                size_hint_y: None
+                height: "20dp"
+
+            MDLabel:
+                text: root.workout_volume
+                font_size: "22sp"
+                bold: True
+                theme_text_color: "Custom"
+                text_color: "FFFFFF"
+                size_hint_y: None
+                height: "35dp"
+
+    # === Separator (pozioma linia) ===
+    Widget:
+        size_hint_y: None
+        height: "1dp"
+        canvas.before:
+            Color:
+                rgba: 0.26, 0.55, 0.5, 0.5
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+    # === Lista ćwiczeń (pierwsze 3) ===
+    MDBoxLayout:
+        id: exercises_list
+        orientation: 'vertical'
+        size_hint_y: None
+        height: self.minimum_height
+        spacing: "10dp"
+
+        # Przykładowe ćwiczenia - TODO: Dynamicznie z exercises_preview
+        ExercisePreviewItem:
+            exercise_image: "assets/image.png"
+            exercise_text: "3 sets Bent Over Row (Barbell)"
+
+        ExercisePreviewItem:
+            exercise_image: "assets/image.png"
+            exercise_text: "3 sets Iso-Lateral Low Row"
+
+        ExercisePreviewItem:
+            exercise_image: "assets/image.png"
+            exercise_text: "3 sets Lat Pulldown (Cable)"
+
+    # === Footer ===
+    MDLabel:
+        text: f"See {root.hidden_exercises_count} more exercises" if root.hidden_exercises_count > 0 else ""
+        font_size: "14sp"
+        theme_text_color: "Custom"
+        text_color: "AAAAAA"
+        halign: "center"
+        size_hint_y: None
+        height: "25dp" if root.hidden_exercises_count > 0 else "0dp"
+
+
+
+# === ExercisePreviewItem - Pojedyncze ćwiczenie w karcie CompletedWorkoutCard ===
+<ExercisePreviewItem>:
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: "50dp"
+    spacing: "12dp"
+
+    # Okrągły obrazek ćwiczenia
+    FitImage:
+        source: root.exercise_image
+        size_hint: None, None
+        size: "50dp", "50dp"
+        radius: [25,]  # Okrągły
+
+    # Tekst "3 sets Exercise Name"
+    MDLabel:
+        text: root.exercise_text
+        font_size: "16sp"
+        theme_text_color: "Custom"
+        text_color: "FFFFFF"
+        valign: "middle"
+
